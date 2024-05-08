@@ -1,0 +1,399 @@
+# NBA Database Overview
+
+## Introduction
+
+- Title: NBA Database Overview
+- License: CC0
+- Note:
+  1. Attributes, example values and descriptions are excerpted from [nba-database-overview.yml](./nba-database-overview.yml)
+  2. GitHub-flavored Markdown tables are generated from the YAML file with GitHub Copilot
+
+## Table `common_player_info`
+
+| Attribute                        | Example value          | Description                                                        |
+| -------------------------------- | ---------------------- | ------------------------------------------------------------------ |
+| birthdate                        | '1968-06-24 00:00:00'  | Player's birthdate                                                 |
+| country                          | USA                    | Player's country                                                   |
+| display_fi_last                  | A. Abdelnaby           | Player's display name (first initial and last name)                |
+| display_first_last               | Alaa Abdelnaby         | Player's display name (first and last name)                        |
+| display_last_comma_first         | Abdelnaby, Alaa        | Player's display name (last name, first name)                      |
+| dleague_flag                     | N                      | Flag indicating if player has played in the D-League               |
+| draft_number                     | '25'                   | Player's draft number                                              |
+| draft_round                      | '1'                    | Player's draft round                                               |
+| draft_year                       | '1990'                 | Year player was drafted                                            |
+| first_name                       | Alaa                   | Player's first name                                                |
+| from_year                        | '1990.0'               | Year player started playing in the NBA                             |
+| games_played_current_season_flag | N                      | Flag indicating if player has played games in the current season   |
+| games_played_flag                | Y                      | Flag indicating if player has played games in the NBA              |
+| greatest_75_flag                 | N                      | Flag indicating if player is part of the NBA's Greatest 75 Players |
+| height                           | 6-10                   | Player's height                                                    |
+| jersey                           | '30'                   | Player's jersey number                                             |
+| last_affiliation                 | Duke/USA               | Player's last college affiliation                                  |
+| last_name                        | Abdelnaby              | Player's last name                                                 |
+| nba_flag                         | Y                      | Flag indicating if player has played in the NBA                    |
+| person_id                        | '76001'                | Unique identifier for the player                                   |
+| player_slug                      | alaa-abdelnaby         | Player's slug (URL-friendly version of player's name)              |
+| playercode                       | HISTADD_alaa_abdelnaby | Player's code                                                      |
+| position                         | Forward                | Player's position                                                  |
+| rosterstatus                     | Inactive               | Player's roster status                                             |
+| school                           | Duke                   | Player's college/university                                        |
+| season_exp                       | '5.0'                  | Player's years of experience in the NBA                            |
+| team_abbreviation                | POR                    | Team's abbreviation                                                |
+| team_city                        | Portland               | Team's city                                                        |
+| team_code                        | blazers                | Team's code                                                        |
+| team_id                          | '1610612757'           | Unique identifier for the team                                     |
+| team_name                        | Trail Blazers          | Team's name                                                        |
+| to_year                          | '1994.0'               | Year player ended playing in the NBA                               |
+| weight                           | '240'                  | Player's weight                                                    |
+
+## Table `draft_combine_stats`
+
+| Attribute                    | Example value   | Description                                      |
+| ---------------------------- | --------------- | ------------------------------------------------ |
+| bench_press                  | '16.0'          | Bench press measurement                          |
+| body_fat_pct                 | '12.4'          | Body fat percentage                              |
+| first_name                   | Adam            | Player's first name                              |
+| hand_length                  |                 | Length of player's hand                          |
+| hand_width                   |                 | Width of player's hand                           |
+| height_w_shoes               |                 | Player's height with shoes                       |
+| height_w_shoes_ft_in         |                 | Player's height with shoes in feet and inches    |
+| height_wo_shoes              | '83.5'          | Player's height without shoes                    |
+| height_wo_shoes_ft_in        | 6' 11.5''       | Player's height without shoes in feet and inches |
+| lane_agility_time            | '11.9'          | Lane agility time measurement                    |
+| last_name                    | Allenspach      | Player's last name                               |
+| max_vertical_leap            | '31.0'          | Maximum vertical leap measurement                |
+| modified_lane_agility_time   |                 | Modified lane agility time measurement           |
+| off_drib_college_break_left  |                 | Off-dribble college break left measurement       |
+| off_drib_college_break_right |                 | Off-dribble college break right measurement      |
+| off_drib_college_top_key     |                 | Off-dribble college top key measurement          |
+| off_drib_fifteen_break_left  |                 | Off-dribble fifteen break left measurement       |
+| off_drib_fifteen_break_right |                 | Off-dribble fifteen break right measurement      |
+| off_drib_fifteen_top_key     |                 | Off-dribble fifteen top key measurement          |
+| on_move_college              |                 | On-the-move college measurement                  |
+| on_move_fifteen              |                 | On-the-move fifteen measurement                  |
+| player_id                    | '12033'         | Unique identifier for the player                 |
+| player_name                  | Adam Allenspach | Player's full name                               |
+| position                     | C               | Player's position                                |
+| season                       | '2001'          | Season of the draft combine                      |
+| spot_college_break_left      |                 | Spot college break left measurement              |
+| spot_college_break_right     |                 | Spot college break right measurement             |
+| spot_college_corner_left     |                 | Spot college corner left measurement             |
+| spot_college_corner_right    |                 | Spot college corner right measurement            |
+| spot_college_top_key         |                 | Spot college top key measurement                 |
+| spot_fifteen_break_left      |                 | Spot fifteen break left measurement              |
+| spot_fifteen_break_right     |                 | Spot fifteen break right measurement             |
+| spot_fifteen_corner_left     |                 | Spot fifteen corner left measurement             |
+| spot_fifteen_corner_right    |                 | Spot fifteen corner right measurement            |
+| spot_fifteen_top_key         |                 | Spot fifteen top key measurement                 |
+| spot_nba_break_left          |                 | Spot NBA break left measurement                  |
+| spot_nba_break_right         |                 | Spot NBA break right measurement                 |
+| spot_nba_corner_left         |                 | Spot NBA corner left measurement                 |
+| spot_nba_corner_right        |                 | Spot NBA corner right measurement                |
+| spot_nba_top_key             |                 | Spot NBA top key measurement                     |
+| standing_reach               | '107.0'         | Standing reach measurement                       |
+| standing_reach_ft_in         | 8' 11''         | Standing reach measurement in feet and inches    |
+| standing_vertical_leap       | '28.5'          | Standing vertical leap measurement               |
+| three_quarter_sprint         | '3.4'           | Three-quarter sprint time measurement            |
+| weight                       | '259'           | Player's weight                                  |
+| wingspan                     | '84.5'          | Wingspan measurement                             |
+| wingspan_ft_in               | 7' 0.5''        | Wingspan measurement in feet and inches          |
+
+## Table `draft_history`
+
+| Attribute           | Example value      | Description                             |
+| ------------------- | ------------------ | --------------------------------------- |
+| draft_type          | Draft              | Type of draft                           |
+| organization        | Texas-El Paso      | College/university organization         |
+| organization_type   | College/University | Type of organization                    |
+| overall_pick        | '1'                | Overall pick number                     |
+| person_id           | '79299'            | Unique identifier for the person        |
+| player_name         | Clifton McNeeley   | Player's full name                      |
+| player_profile_flag | '0'                | Flag indicating if player has a profile |
+| round_number        | '1'                | Round number of the draft               |
+| round_pick          | '1'                | Pick number within the round            |
+| season              | '1947'             | Season of the draft                     |
+| team_abbreviation   | PIT                | Team's abbreviation                     |
+| team_city           | Pittsburgh         | Team's city                             |
+| team_id             | '1610610031'       | Unique identifier for the team          |
+| team_name           | Ironmen            | Team's name                             |
+
+## Table `game`
+
+| Attribute              | Example value         | Description                                             |
+| ---------------------- | --------------------- | ------------------------------------------------------- |
+| ast_away               |                       | Assists by the away team                                |
+| ast_home               |                       | Assists by the home team                                |
+| blk_away               |                       | Blocks by the away team                                 |
+| blk_home               |                       | Blocks by the home team                                 |
+| dreb_away              |                       | Defensive rebounds by the away team                     |
+| dreb_home              |                       | Defensive rebounds by the home team                     |
+| fg3_pct_away           |                       | Three-point field goal percentage by the away team      |
+| fg3_pct_home           |                       | Three-point field goal percentage by the home team      |
+| fg3a_away              |                       | Three-point field goal attempts by the away team        |
+| fg3a_home              |                       | Three-point field goal attempts by the home team        |
+| fg3m_away              |                       | Three-point field goals made by the away team           |
+| fg3m_home              |                       | Three-point field goals made by the home team           |
+| fg_pct_away            |                       | Field goal percentage by the away team                  |
+| fg_pct_home            |                       | Field goal percentage by the home team                  |
+| fga_away               |                       | Field goal attempts by the away team                    |
+| fga_home               |                       | Field goal attempts by the home team                    |
+| fgm_away               | '24.0'                | Field goals made by the away team                       |
+| fgm_home               | '25.0'                | Field goals made by the home team                       |
+| ft_pct_away            | '0.769'               | Free throw percentage by the away team                  |
+| ft_pct_home            | '0.552'               | Free throw percentage by the home team                  |
+| fta_away               | '26.0'                | Free throw attempts by the away team                    |
+| fta_home               | '29.0'                | Free throw attempts by the home team                    |
+| ftm_away               | '20.0'                | Free throws made by the away team                       |
+| ftm_home               | '16.0'                | Free throws made by the home team                       |
+| game_date              | '1946-11-01 00:00:00' | Date of the game                                        |
+| game_id                | '0024600001'          | Unique identifier for the game                          |
+| matchup_away           | NYK @ HUS             | Matchup of the away team                                |
+| matchup_home           | HUS vs. NYK           | Matchup of the home team                                |
+| min                    | '0'                   | Minutes played                                          |
+| oreb_away              |                       | Offensive rebounds by the away team                     |
+| oreb_home              |                       | Offensive rebounds by the home team                     |
+| pf_away                |                       | Personal fouls by the away team                         |
+| pf_home                |                       | Personal fouls by the home team                         |
+| plus_minus_away        | '2'                   | Plus/minus statistic for the away team                  |
+| plus_minus_home        | '-2'                  | Plus/minus statistic for the home team                  |
+| pts_away               | '68.0'                | Points scored by the away team                          |
+| pts_home               | '66.0'                | Points scored by the home team                          |
+| reb_away               |                       | Total rebounds by the away team                         |
+| reb_home               |                       | Total rebounds by the home team                         |
+| season_id              | '21946'               | Season of the game                                      |
+| season_type            | Regular Season        | Type of season                                          |
+| stl_away               |                       | Steals by the away team                                 |
+| stl_home               |                       | Steals by the home team                                 |
+| team_abbreviation_away | NYK                   | Abbreviation of the away team                           |
+| team_abbreviation_home | HUS                   | Abbreviation of the home team                           |
+| team_id_away           | '1610612752'          | Unique identifier for the away team                     |
+| team_id_home           | '1610610035'          | Unique identifier for the home team                     |
+| team_name_away         | New York Knicks       | Name of the away team                                   |
+| team_name_home         | Toronto Huskies       | Name of the home team                                   |
+| tov_away               |                       | Turnovers by the away team                              |
+| tov_home               |                       | Turnovers by the home team                              |
+| video_available_away   | '0'                   | Flag indicating if video is available for the away team |
+| video_available_home   | '0'                   | Flag indicating if video is available for the home team |
+| wl_away                | W                     | Win/loss result for the away team                       |
+| wl_home                | L                     | Win/loss result for the home team                       |
+
+## Table `game_info`
+
+| Attribute  | Example value         | Description                    |
+| ---------- | --------------------- | ------------------------------ |
+| attendance |                       | Attendance of the game         |
+| game_date  | '1946-11-01 00:00:00' | Date of the game               |
+| game_id    | '0024600001'          | Unique identifier for the game |
+| game_time  |                       | Time of the game               |
+
+## Table `game_summary`
+
+| Attribute                        | Example value         | Description                                 |
+| -------------------------------- | --------------------- | ------------------------------------------- |
+| game_date_est                    | '1946-11-01 00:00:00' | Date of the game (Eastern Standard Time)    |
+| game_id                          | '0024600001'          | Unique identifier for the game              |
+| game_sequence                    |                       | Sequence number of the game                 |
+| game_status_id                   | '3'                   | Status ID of the game                       |
+| game_status_text                 |                       | Status text of the game                     |
+| gamecode                         | 19461101/NYKHUS       | Game code                                   |
+| home_team_id                     | '1610610035'          | Unique identifier for the home team         |
+| live_pc_time                     |                       | Live PC time                                |
+| live_period                      | '5'                   | Live period of the game                     |
+| live_period_time_bcast           | Q5 -                  | Live period time broadcast                  |
+| natl_tv_broadcaster_abbreviation |                       | Abbreviation of the national TV broadcaster |
+| season                           | '1946'                | Season of the game                          |
+| visitor_team_id                  | '1610612752'          | Unique identifier for the visitor team      |
+| wh_status                        | '1'                   | WH status                                   |
+
+## Table `inactive_players`
+
+| Attribute         | Example value | Description                      |
+| ----------------- | ------------- | -------------------------------- |
+| first_name        | Bobby         | Player's first name              |
+| game_id           | 0029600034    | Unique identifier for the game   |
+| jersey_num        | '14'          | Player's jersey number           |
+| last_name         | Phills        | Player's last name               |
+| player_id         | '184'         | Unique identifier for the player |
+| team_abbreviation | CLE           | Team's abbreviation              |
+| team_city         | Cleveland     | Team's city                      |
+| team_id           | '1610612739'  | Unique identifier for the team   |
+| team_name         | Cavaliers     | Team's name                      |
+
+## Table `line_score`
+
+| Attribute              | Example value         | Description                                   |
+| ---------------------- | --------------------- | --------------------------------------------- |
+| game_date_est          | '1946-11-01 00:00:00' | Date of the game (Eastern Standard Time)      |
+| game_id                | '0024600001'          | Unique identifier for the game                |
+| game_sequence          |                       | Sequence number of the game                   |
+| pts_away               | '68.0'                | Points scored by the away team                |
+| pts_home               | '66.0'                | Points scored by the home team                |
+| pts_ot10_away          |                       | Points scored by the away team in overtime 10 |
+| pts_ot10_home          |                       | Points scored by the home team in overtime 10 |
+| pts_ot1_away           | '24.0'                | Points scored by the away team in overtime 1  |
+| pts_ot1_home           | '18.0'                | Points scored by the home team in overtime 1  |
+| pts_ot2_away           |                       | Points scored by the away team in overtime 2  |
+| pts_ot2_home           |                       | Points scored by the home team in overtime 2  |
+| pts_ot3_away           |                       | Points scored by the away team in overtime 3  |
+| pts_ot3_home           |                       | Points scored by the home team in overtime 3  |
+| pts_ot4_away           |                       | Points scored by the away team in overtime 4  |
+| pts_ot4_home           |                       | Points scored by the home team in overtime 4  |
+| pts_ot5_away           |                       | Points scored by the away team in overtime 5  |
+| pts_ot5_home           |                       | Points scored by the home team in overtime 5  |
+| pts_ot6_away           |                       | Points scored by the away team in overtime 6  |
+| pts_ot6_home           |                       | Points scored by the home team in overtime 6  |
+| pts_ot7_away           |                       | Points scored by the away team in overtime 7  |
+| pts_ot7_home           |                       | Points scored by the home team in overtime 7  |
+| pts_ot8_away           |                       | Points scored by the away team in overtime 8  |
+| pts_ot8_home           |                       | Points scored by the home team in overtime 8  |
+| pts_ot9_away           |                       | Points scored by the away team in overtime 9  |
+| pts_ot9_home           |                       | Points scored by the home team in overtime 9  |
+| pts_qtr1_away          |                       | Points scored by the away team in quarter 1   |
+| pts_qtr1_home          |                       | Points scored by the home team in quarter 1   |
+| pts_qtr2_away          |                       | Points scored by the away team in quarter 2   |
+| pts_qtr2_home          |                       | Points scored by the home team in quarter 2   |
+| pts_qtr3_away          |                       | Points scored by the away team in quarter 3   |
+| pts_qtr3_home          |                       | Points scored by the home team in quarter 3   |
+| pts_qtr4_away          |                       | Points scored by the away team in quarter 4   |
+| pts_qtr4_home          |                       | Points scored by the home team in quarter 4   |
+| team_abbreviation_away | NYK                   | Abbreviation of the away team                 |
+| team_abbreviation_home | HUS                   | Abbreviation of the home team                 |
+| team_city_name_away    | New York              | City name of the away team                    |
+| team_city_name_home    | Toronto               | City name of the home team                    |
+| team_id_away           | '1610612752'          | Unique identifier for the away team           |
+| team_id_home           | '1610610035'          | Unique identifier for the home team           |
+| team_nickname_away     | Knicks                | Nickname of the away team                     |
+| team_nickname_home     | Huskies               | Nickname of the home team                     |
+| team_wins_losses_away  | '-'                   | Win/loss record of the away team              |
+| team_wins_losses_home  | '-'                   | Win/loss record of the home team              |
+
+## Table `officials`
+
+| Attribute   | Example value | Description                        |
+| ----------- | ------------- | ---------------------------------- |
+| first_name  | Bruce         | Official's first name              |
+| game_id     | 0029600059    | Unique identifier for the game     |
+| jersey_num  | '9'           | Official's jersey number           |
+| last_name   | Alexander     | Official's last name               |
+| official_id | '1140'        | Unique identifier for the official |
+
+## Table `other_stats`
+
+| Attribute              | Example value | Description                                                     |
+| ---------------------- | ------------- | --------------------------------------------------------------- |
+| game_id                | 0029600012    | Unique identifier for the game                                  |
+| largest_lead_away      | '19'          | Largest lead by the away team                                   |
+| largest_lead_home      | '1'           | Largest lead by the home team                                   |
+| lead_changes           | '4'           | Number of lead changes                                          |
+| league_id              | '00'          | League ID                                                       |
+| pts_2nd_chance_away    | '10'          | Points scored by the away team from second chance opportunities |
+| pts_2nd_chance_home    | '18'          | Points scored by the home team from second chance opportunities |
+| pts_fb_away            | '13'          | Points scored by the away team on fast breaks                   |
+| pts_fb_home            | '2'           | Points scored by the home team on fast breaks                   |
+| pts_off_to_away        |               | Points scored by the away team off turnovers                    |
+| pts_off_to_home        |               | Points scored by the home team off turnovers                    |
+| pts_paint_away         | '42'          | Points scored by the away team in the paint                     |
+| pts_paint_home         | '44'          | Points scored by the home team in the paint                     |
+| team_abbreviation_away | LAL           | Abbreviation of the away team                                   |
+| team_abbreviation_home | PHX           | Abbreviation of the home team                                   |
+| team_city_away         | Los Angeles   | City of the away team                                           |
+| team_city_home         | Phoenix       | City of the home team                                           |
+| team_id_away           | '1610612747'  | Unique identifier for the away team                             |
+| team_id_home           | '1610612756'  | Unique identifier for the home team                             |
+| team_rebounds_away     | '11.0'        | Team rebounds by the away team                                  |
+| team_rebounds_home     | '11.0'        | Team rebounds by the home team                                  |
+| team_turnovers_away    | '0.0'         | Team turnovers by the away team                                 |
+| team_turnovers_home    | '0.0'         | Team turnovers by the home team                                 |
+| times_tied             | '1'           | Number of times the game was tied                               |
+| total_turnovers_away   | '23.0'        | Total turnovers by the away team                                |
+| total_turnovers_home   | '12.0'        | Total turnovers by the home team                                |
+
+## Table `play_by_play`
+
+| Attribute                 | Example value                      | Description                              |
+| ------------------------- | ---------------------------------- | ---------------------------------------- |
+| eventmsgactiontype        | '0'                                | Event message action type                |
+| eventmsgtype              | '12'                               | Event message type                       |
+| eventnum                  | '0'                                | Event number                             |
+| game_id                   | 0029600012                         | Unique identifier for the game           |
+| homedescription           |                                    | Description of the home team's action    |
+| neutraldescription        | Start of 1st Period (14:43 PM EST) | Neutral description of the action        |
+| pctimestring              | '12:00'                            | Time string in percentage format         |
+| period                    | '1'                                | Period of the game                       |
+| person1type               | '0.0'                              | Person 1 type                            |
+| person2type               | '0.0'                              | Person 2 type                            |
+| person3type               | '0.0'                              | Person 3 type                            |
+| player1_id                | '0'                                | Unique identifier for player 1           |
+| player1_name              |                                    | Name of player 1                         |
+| player1_team_abbreviation |                                    | Abbreviation of player 1's team          |
+| player1_team_city         |                                    | City of player 1's team                  |
+| player1_team_id           |                                    | Unique identifier for player 1's team    |
+| player1_team_nickname     |                                    | Nickname of player 1's team              |
+| player2_id                | '0'                                | Unique identifier for player 2           |
+| player2_name              |                                    | Name of player 2                         |
+| player2_team_abbreviation |                                    | Abbreviation of player 2's team          |
+| player2_team_city         |                                    | City of player 2's team                  |
+| player2_team_id           |                                    | Unique identifier for player 2's team    |
+| player2_team_nickname     |                                    | Nickname of player 2's team              |
+| player3_id                | '0'                                | Unique identifier for player 3           |
+| player3_name              |                                    | Name of player 3                         |
+| player3_team_abbreviation |                                    | Abbreviation of player 3's team          |
+| player3_team_city         |                                    | City of player 3's team                  |
+| player3_team_id           |                                    | Unique identifier for player 3's team    |
+| player3_team_nickname     |                                    | Nickname of player 3's team              |
+| score                     |                                    | Score                                    |
+| scoremargin               |                                    | Score margin                             |
+| video_available_flag      | '0'                                | Flag indicating if video is available    |
+| visitordescription        |                                    | Description of the visitor team's action |
+| wctimestring              | 14:43 PM                           | Time string in Western Conference format |
+
+## Table `player`
+
+| Attribute  | Example value  | Description                             |
+| ---------- | -------------- | --------------------------------------- |
+| first_name | Alaa           | Player's first name                     |
+| full_name  | Alaa Abdelnaby | Player's full name                      |
+| id         | '76001'        | Unique identifier for the player        |
+| is_active  | '0'            | Flag indicating if the player is active |
+| last_name  | Abdelnaby      | Player's last name                      |
+
+## Table `team`
+
+| Attribute    | Example value | Description                    |
+| ------------ | ------------- | ------------------------------ |
+| abbreviation | ATL           | Team's abbreviation            |
+| city         | Atlanta       | Team's city                    |
+| full_name    | Atlanta Hawks | Team's full name               |
+| id           | '1610612737'  | Unique identifier for the team |
+| nickname     | Hawks         | Team's nickname                |
+| state        | Atlanta       | Team's state                   |
+| year_founded | '1949.0'      | Year the team was founded      |
+
+## Table `team_details`
+
+| Attribute          | Example value                  | Description                    |
+| ------------------ | ------------------------------ | ------------------------------ |
+| abbreviation       | ATL                            | Team's abbreviation            |
+| arena              | State Farm Arena               | Team's arena                   |
+| arenacapacity      | '18729.0'                      | Capacity of the team's arena   |
+| city               | Atlanta                        | Team's city                    |
+| dleagueaffiliation | College Park Skyhawks          | Team's D-League affiliation    |
+| facebook           | https://www.facebook.com/hawks | Team's Facebook page           |
+| generalmanager     | Travis Schlenk                 | Team's general manager         |
+| headcoach          | Quin Snyder                    | Team's head coach              |
+| instagram          | https://instagram.com/atlhawks | Team's Instagram page          |
+| nickname           | Hawks                          | Team's nickname                |
+| owner              | Tony Ressler                   | Team's owner                   |
+| team_id            | '1610612737'                   | Unique identifier for the team |
+| twitter            | https://twitter.com/ATLHawks   | Team's Twitter page            |
+| yearfounded        | '1949.0'                       | Year the team was founded      |
+
+## Table `team_history`
+
+| Attribute        | Example value | Description                    |
+| ---------------- | ------------- | ------------------------------ |
+| city             | Atlanta       | Team's city                    |
+| nickname         | Hawks         | Team's nickname                |
+| team_id          | '1610612737'  | Unique identifier for the team |
+| year_active_till | '2019'        | Year the team was active till  |
+| year_founded     | '1968'        | Year the team was founded      |
