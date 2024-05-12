@@ -6,8 +6,10 @@
 
 ```yaml
 diagrams:  # Diagrams
+  - Entity-relationship model.drawio
 misc:      # Miscellaneous
-  - nba-database-overview.yml  # NBA Database Overview
-  - references.md              # References
+  - nba-database-overview.yml
+  - references.md
 proposal:  # Proposal
+  - README.pdf
 ```
