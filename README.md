@@ -5,7 +5,7 @@
 ## File Organization
 
 - diagrams:
-  - [Entity-relationship model.drawio](./diagrams/Entity–relationship%20model.drawio)
+  - [Entity-relationship model.drawio](./diagrams/Entity-relationship%20model.drawio)
   - [Relational Schema.drawio](./diagrams/Relational%20Schema.drawio)
 - misc:
   - [nba-database-overview.md](./misc/nba-database-overview.md)
