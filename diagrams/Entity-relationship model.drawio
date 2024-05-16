@@ -407,15 +407,6 @@
             <mxPoint y="-10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="98YgMs9rK_HKfB4fXoP2-116" value="" style="endArrow=none;html=1;rounded=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=18;" parent="1" source="98YgMs9rK_HKfB4fXoP2-117" target="98YgMs9rK_HKfB4fXoP2-5" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="810" y="-850" as="sourcePoint" />
-            <mxPoint x="390" y="-660" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="98YgMs9rK_HKfB4fXoP2-117" value="Salary" style="ellipse;whiteSpace=wrap;html=1;align=center;fontSize=18;" parent="1" vertex="1">
-          <mxGeometry x="750" y="-900" width="100" height="40" as="geometry" />
-        </mxCell>
         <mxCell id="2L8KqGuZSr05R1WayIiN-2" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;fontSize=18;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="930" y="-230" as="sourcePoint" />
