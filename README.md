@@ -4,6 +4,9 @@
 
 ## File Organization
 
+- api:
+  - [api/README.md](./api/README.md)
+  - [web/openapi.yml](./api/web/openapi.yml)
 - diagrams:
   - [Entity-relationship model.drawio](./diagrams/Entity-relationship%20model.drawio)
   - [Relational Schema.drawio](./diagrams/Relational%20Schema.drawio)

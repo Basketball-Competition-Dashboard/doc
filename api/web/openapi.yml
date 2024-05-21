@@ -1,0 +1,277 @@
+openapi: 3.1.0
+
+info:
+  title: 籃球情報室 Web API 文件
+  version: 0.0.0
+  description: |-
+    Basketball Competition Dashboard Web API
+
+externalDocs:
+  description: Home Page
+  url: https://github.com/Basketball-Competition-Dashboard
+
+servers:
+  - url: http://{API_SERVER_HOST}/web_api
+    description: Web API service
+
+tags:
+  - name: 比賽
+    description: Games
+  - name: 球隊
+    description: Teams
+  - name: 球員
+    description: Players
+paths:
+  /games/get:
+    post:
+      tags:
+        - 比賽
+      summary: 取得比賽資料
+      description: Get games
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  $ref: '#/components/schemas/PageMeta'
+                sort:
+                  $ref: '#/components/schemas/SortMeta'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    $ref: '#/components/schemas/PageMeta'
+                  values:
+                    $ref: '#/components/schemas/Games'
+        '400':
+          $ref: '#/components/responses/ClientError'
+
+  /teams/get:
+    post:
+      tags:
+        - 球隊
+      summary: 取得球隊資料
+      description: Get teams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  $ref: '#/components/schemas/PageMeta'
+                sort:
+                  $ref: '#/components/schemas/SortMeta'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    $ref: '#/components/schemas/PageMeta'
+                  values:
+                    $ref: '#/components/schemas/Teams'
+        '400':
+          $ref: '#/components/responses/ClientError'
+
+  /players/get:
+    post:
+      tags:
+        - 球員
+      summary: 取得球員資料
+      description: Get players
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  $ref: '#/components/schemas/PageMeta'
+                sort:
+                  $ref: '#/components/schemas/SortMeta'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    $ref: '#/components/schemas/PageMeta'
+                  values:
+                    $ref: '#/components/schemas/Players'
+        '400':
+          $ref: '#/components/responses/ClientError'
+
+components:
+  schemas:
+    Game:
+      type: object
+      properties:
+        date:
+          description: 'Date of the game'
+          type: string
+          examples:
+            - 'Celtics'
+        home:
+          description: 'Home team name'
+          type: string
+          examples:
+            - 'Boston'
+        away:
+          description: 'Away team name'
+          type: string
+          examples:
+            - 'Joseph Mazzulla'
+    Games:
+      type: array
+      items:
+        $ref: '#/components/schemas/Game'
+    Player:
+      type: object
+      properties:
+        name:
+          description: 'Player name'
+          type: string
+          examples:
+            - 'Steven Adams'
+        team_name:
+          description: 'Team name'
+          type: string
+          examples:
+            - 'Celtics'
+        position:
+          description: 'Player position'
+          type: string
+          examples:
+            - 'F'
+        birthdate:
+          description: 'Player birthdate'
+          type: string
+          format: date
+          examples:
+            - '1968-06-24'
+        height:
+          description: 'Player height'
+          type: string
+          examples:
+            - '6-11'
+        weight:
+          description: 'Player weight'
+          type: integer
+          format: uint64
+          examples:
+            - 265
+        country:
+          description: 'Player country'
+          type: string
+          examples:
+            - 'New Zealand'
+    Players:
+      type: array
+      items:
+        $ref: '#/components/schemas/Player'
+    Team:
+      type: object
+      properties:
+        name:
+          description: 'Team name'
+          type: string
+          examples:
+            - 'Celtics'
+        city:
+          description: 'Team city'
+          type: string
+          examples:
+            - 'Boston'
+        coach:
+          description: 'Team coach name'
+          type: string
+          examples:
+            - 'Joseph Mazzulla'
+        year_founded:
+          description: 'Team founded year'
+          type: integer
+          format: int64
+          examples:
+            - 1946
+    Teams:
+      type: array
+      items:
+        $ref: '#/components/schemas/Team'
+    PageMeta:
+      description: Pagination metadata
+      type: object
+      properties:
+        offset:
+          description: 'Page offset in records'
+          type: integer
+          format: uint64
+          examples:
+            - 0
+        length:
+          description: 'Page length in records'
+          type: integer
+          format: uint64
+          examples:
+            - 10
+    SortMeta:
+      description: Sorting metadata
+      type: object
+      properties:
+        field:
+          description: 'Field to sort by'
+          type: array
+          items:
+            type: string
+          examples:
+            - []
+        order:
+          description: 'Sort order'
+          type: string
+          enum:
+            - 'ascending'
+            - 'descending'
+          examples:
+            - 'descending'
+
+  responses:
+    ClientError:
+      description: Client error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                examples: ['bad request']
+
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
