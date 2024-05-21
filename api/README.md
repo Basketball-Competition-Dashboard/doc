@@ -1,5 +1,3 @@
-Translate to 台灣話、國語 Taiwan zh_tw trad chinese
-
 # API
 
 > Application Programming Interface
