@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.0
 
 info:
   title: 籃球情報室 Web API 文件
@@ -21,6 +21,7 @@ tags:
     description: Teams
   - name: 球員
     description: Players
+
 paths:
   /games/get:
     post:
@@ -29,16 +30,7 @@ paths:
       summary: 取得比賽資料
       description: Get games
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                page:
-                  $ref: '#/components/schemas/PageMeta'
-                sort:
-                  $ref: '#/components/schemas/SortMeta'
+        $ref: '#/components/requestBodies/Records'
       responses:
         '200':
           description: Ok
@@ -46,13 +38,18 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - page
+                  - values
                 properties:
                   page:
                     $ref: '#/components/schemas/PageMeta'
                   values:
-                    $ref: '#/components/schemas/Games'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
         '400':
-          $ref: '#/components/responses/ClientError'
+          $ref: '#/components/responses/Error'
 
   /teams/get:
     post:
@@ -61,16 +58,7 @@ paths:
       summary: 取得球隊資料
       description: Get teams
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                page:
-                  $ref: '#/components/schemas/PageMeta'
-                sort:
-                  $ref: '#/components/schemas/SortMeta'
+        $ref: '#/components/requestBodies/Records'
       responses:
         '200':
           description: Ok
@@ -78,13 +66,18 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - page
+                  - values
                 properties:
                   page:
                     $ref: '#/components/schemas/PageMeta'
                   values:
-                    $ref: '#/components/schemas/Teams'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Team'
         '400':
-          $ref: '#/components/responses/ClientError'
+          $ref: '#/components/responses/Error'
 
   /players/get:
     post:
@@ -93,16 +86,7 @@ paths:
       summary: 取得球員資料
       description: Get players
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                page:
-                  $ref: '#/components/schemas/PageMeta'
-                sort:
-                  $ref: '#/components/schemas/SortMeta'
+        $ref: '#/components/requestBodies/Records'
       responses:
         '200':
           description: Ok
@@ -114,145 +98,163 @@ paths:
                   page:
                     $ref: '#/components/schemas/PageMeta'
                   values:
-                    $ref: '#/components/schemas/Players'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Player'
+                required:
+                  - page
+                  - values
         '400':
-          $ref: '#/components/responses/ClientError'
+          $ref: '#/components/responses/Error'
 
 components:
   schemas:
     Game:
       type: object
+      required:
+        - date
+        - home
+        - away
       properties:
         date:
           description: 'Date of the game'
           type: string
-          examples:
-            - 'Celtics'
+          example: 'Celtics'
         home:
           description: 'Home team name'
           type: string
-          examples:
-            - 'Boston'
+          example: 'Boston'
         away:
           description: 'Away team name'
           type: string
-          examples:
-            - 'Joseph Mazzulla'
-    Games:
-      type: array
-      items:
-        $ref: '#/components/schemas/Game'
+          example: 'Joseph Mazzulla'
+
+    Team:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          description: 'Team name'
+          type: string
+          example: 'Celtics'
+        city:
+          description: 'Team city'
+          type: string
+          example: 'Boston'
+        coach:
+          description: 'Team coach name'
+          type: string
+          example: 'Joseph Mazzulla'
+        year_founded:
+          description: 'Team founded year'
+          type: integer
+          format: int32
+          example: 1946
+
     Player:
       type: object
+      required:
+        - name
       properties:
         name:
           description: 'Player name'
           type: string
-          examples:
-            - 'Steven Adams'
+          example: 'Steven Adams'
         team_name:
           description: 'Team name'
           type: string
-          examples:
-            - 'Celtics'
+          example: 'Celtics'
         position:
           description: 'Player position'
           type: string
-          examples:
-            - 'F'
+          example: 'F'
         birthdate:
           description: 'Player birthdate'
           type: string
           format: date
-          examples:
-            - '1968-06-24'
+          example: '1968-06-24'
         height:
           description: 'Player height'
           type: string
-          examples:
-            - '6-11'
+          example: '6-11'
         weight:
           description: 'Player weight'
           type: integer
-          format: uint64
-          examples:
-            - 265
+          format: uint32
+          example: 265
         country:
           description: 'Player country'
           type: string
-          examples:
-            - 'New Zealand'
-    Players:
-      type: array
-      items:
-        $ref: '#/components/schemas/Player'
-    Team:
-      type: object
-      properties:
-        name:
-          description: 'Team name'
-          type: string
-          examples:
-            - 'Celtics'
-        city:
-          description: 'Team city'
-          type: string
-          examples:
-            - 'Boston'
-        coach:
-          description: 'Team coach name'
-          type: string
-          examples:
-            - 'Joseph Mazzulla'
-        year_founded:
-          description: 'Team founded year'
-          type: integer
-          format: int64
-          examples:
-            - 1946
-    Teams:
-      type: array
-      items:
-        $ref: '#/components/schemas/Team'
+          example: 'New Zealand'
+
     PageMeta:
       description: Pagination metadata
       type: object
+      required:
+        - offset
+        - length
       properties:
         offset:
           description: 'Page offset in records'
           type: integer
-          format: uint64
-          examples:
-            - 0
+          format: uint32
+          example: 0
         length:
           description: 'Page length in records'
           type: integer
-          format: uint64
-          examples:
-            - 10
+          format: uint32
+          example: 10
+
     SortMeta:
       description: Sorting metadata
       type: object
+      required:
+        - field
+        - order
       properties:
         field:
           description: 'Field to sort by'
           type: array
           items:
             type: string
-          examples:
-            - []
+          example: ['name']
         order:
           description: 'Sort order'
           type: string
           enum:
             - 'ascending'
             - 'descending'
+          example: 'descending'
+
+  requestBodies:
+    Records:
+      description: Records request body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              page:
+                $ref: '#/components/schemas/PageMeta'
+              sort:
+                $ref: '#/components/schemas/SortMeta'
           examples:
-            - 'descending'
+            'order by name asc':
+              value:
+                page:
+                  offset: 0
+                  length: 10
+                sort:
+                  field: ['name']
+                  order: 'ascending'
+            'default':
+              value: {}
 
   responses:
-    ClientError:
-      description: Client error response
+    Error:
+      description: Error response
       content:
         application/json:
           schema:
@@ -260,7 +262,7 @@ components:
             properties:
               message:
                 type: string
-                examples: ['bad request']
+                example: 'Invalid request'
 
   securitySchemes:
     petstore_auth:
