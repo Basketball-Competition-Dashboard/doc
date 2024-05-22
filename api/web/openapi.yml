@@ -23,7 +23,7 @@ tags:
     description: Players
 
 paths:
-  /games/get:
+  /games:
     post:
       tags:
         - 比賽
@@ -51,7 +51,7 @@ paths:
         '400':
           $ref: '#/components/responses/Error'
 
-  /teams/get:
+  /teams:
     post:
       tags:
         - 球隊
@@ -79,7 +79,7 @@ paths:
         '400':
           $ref: '#/components/responses/Error'
 
-  /players/get:
+  /players:
     post:
       tags:
         - 球員
