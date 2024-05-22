@@ -16,7 +16,8 @@
 
 - [Home Page](https://swagger.io/)
 - [Tools](https://swagger.io/tools/)
-- [Online Editor](https://editor-next.swagger.io/)
+    - [Online Editor (v4)](https://editor.swagger.io/)
+    - [Online Editor (v5)](https://editor-next.swagger.io/)
 
 #### Introduction
 
