@@ -14,5 +14,6 @@
   - [nba-database-overview.md](./misc/nba-database-overview.md)
   - [references.md](./misc/references.md)
 - proposal:
+  - [ARCH.pdf](./proposal/ARCH.pdf)
   - [ERM+RDM.pdf](./proposal/ERM+RDM.pdf)
   - [README.pdf](./proposal/README.pdf)
