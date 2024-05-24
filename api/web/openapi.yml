@@ -3,8 +3,7 @@ openapi: 3.0.0
 info:
   title: 籃球情報室 Web API 文件
   version: 0.0.0
-  description: |-
-    Basketball Competition Dashboard Web API
+  description: Basketball Competition Dashboard Web API
 
 externalDocs:
   description: Home Page
@@ -15,6 +14,8 @@ servers:
     description: Web API service
 
 tags:
+  - name: 認證
+    description: Authentication
   - name: 比賽
     description: Games
   - name: 球隊
@@ -23,6 +24,44 @@ tags:
     description: Players
 
 paths:
+  /auth/login:
+    post:
+      tags:
+        - 認證
+      summary: 登入
+      description: Login
+      requestBody:
+        $ref: '#/components/requestBodies/Authentication'
+      responses:
+        '204':
+          description: Logged in
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=; HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  
+  /auth/logout:
+    post:
+      tags:
+        - 認證
+      summary: 登出
+      description: Logout
+      security:
+        - session_id: []
+      responses:
+        '204':
+          description: Logged out
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'session_id=; HttpOnly; Max-Age=0; Path=/; SameSite=Strict'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
   /games:
     post:
       tags:
@@ -49,7 +88,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Game'
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/BadRequestError'
 
   /teams:
     post:
@@ -77,7 +116,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Team'
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/BadRequestError'
 
   /players:
     post:
@@ -105,7 +144,7 @@ paths:
                   - page
                   - values
         '400':
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/BadRequestError'
 
 components:
   schemas:
@@ -117,15 +156,15 @@ components:
         - away
       properties:
         date:
-          description: 'Date of the game'
+          description: Date of the game
           type: string
           example: 'Celtics'
         home:
-          description: 'Home team name'
+          description: Home team name
           type: string
           example: 'Boston'
         away:
-          description: 'Away team name'
+          description: Away team name
           type: string
           example: 'Joseph Mazzulla'
 
@@ -135,19 +174,19 @@ components:
         - name
       properties:
         name:
-          description: 'Team name'
+          description: Team name
           type: string
           example: 'Celtics'
         city:
-          description: 'Team city'
+          description: Team city
           type: string
           example: 'Boston'
         coach:
-          description: 'Team coach name'
+          description: Team coach name
           type: string
           example: 'Joseph Mazzulla'
         year_founded:
-          description: 'Team founded year'
+          description: Team founded year
           type: integer
           format: int32
           example: 1946
@@ -158,33 +197,33 @@ components:
         - name
       properties:
         name:
-          description: 'Player name'
+          description: Player name
           type: string
           example: 'Steven Adams'
         team_name:
-          description: 'Team name'
+          description: Team name
           type: string
           example: 'Celtics'
         position:
-          description: 'Player position'
+          description: Player position
           type: string
           example: 'F'
         birthdate:
-          description: 'Player birthdate'
+          description: Player birthdate
           type: string
           format: date
           example: '1968-06-24'
         height:
-          description: 'Player height'
+          description: Player height
           type: string
           example: '6-11'
         weight:
-          description: 'Player weight'
+          description: Player weight
           type: integer
           format: uint32
           example: 265
         country:
-          description: 'Player country'
+          description: Player country
           type: string
           example: 'New Zealand'
 
@@ -196,12 +235,12 @@ components:
         - length
       properties:
         offset:
-          description: 'Page offset in records'
+          description: Page offset in records
           type: integer
           format: uint32
           example: 0
         length:
-          description: 'Page length in records'
+          description: Page length in records
           type: integer
           format: uint32
           example: 10
@@ -214,13 +253,13 @@ components:
         - order
       properties:
         field:
-          description: 'Field to sort by'
+          description: Field to sort by
           type: array
           items:
             type: string
           example: ['name']
         order:
-          description: 'Sort order'
+          description: Sorting order
           type: string
           enum:
             - 'ascending'
@@ -228,8 +267,26 @@ components:
           example: 'descending'
 
   requestBodies:
+    Authentication:
+      description: The request body for authentication
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - credential
+            properties:
+              name:
+                type: string
+                example: 'Manager Zoe'
+              credential:
+                type: string
+                example: "Manager Zoe's super safe password!"
+
     Records:
-      description: Records request body
+      description: The request body for records
       required: true
       content:
         application/json:
@@ -253,8 +310,8 @@ components:
               value: {}
 
   responses:
-    Error:
-      description: Error response
+    BadRequestError:
+      description: Error response for a bad request
       content:
         application/json:
           schema:
@@ -262,18 +319,21 @@ components:
             properties:
               message:
                 type: string
-                example: 'Invalid request'
+                example: 'Your request is bad.'
+    
+    NotFoundError:
+      description: Error response for a resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'The resource is not found.'
 
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
+    session_id:
       type: apiKey
-      name: api_key
-      in: header
+      in: cookie
+      name: session_id
