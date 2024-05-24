@@ -335,5 +335,6 @@ components:
   securitySchemes:
     session_id:
       type: apiKey
+      description: The cookie for authentication, which is managed by the server.
       in: cookie
       name: session_id
