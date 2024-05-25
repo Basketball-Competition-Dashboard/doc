@@ -386,7 +386,7 @@ components:
             type: string
           example: ['name']
         order:
-          description: Sorting order
+          description: Sort order
           type: string
           enum:
             - 'ascending'
