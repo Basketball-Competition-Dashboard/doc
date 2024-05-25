@@ -152,10 +152,16 @@ components:
       description: Game information
       type: object
       required:
+        - id
         - date
         - home_name
         - away_name
       properties:
+        id:
+          description: Game ID
+          type: integer
+          format: uint32
+          example: 3001
         date:
           description: Date of the game
           type: string
@@ -188,8 +194,14 @@ components:
       description: Team information
       type: object
       required:
+        - id
         - name
       properties:
+        id:
+          description: Team ID
+          type: integer
+          format: uint32
+          example: 60020
         name:
           description: Team name
           type: string
@@ -212,8 +224,14 @@ components:
       description: Player information
       type: object
       required:
+        - id
         - name
       properties:
+        id:
+          description: Player ID
+          type: integer
+          format: uint32
+          example: 3695
         name:
           description: Player name
           type: string
