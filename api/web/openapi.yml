@@ -149,26 +149,43 @@ paths:
 components:
   schemas:
     Game:
+      description: Game information
       type: object
       required:
         - date
-        - home
-        - away
+        - home_name
+        - away_name
       properties:
         date:
           description: Date of the game
           type: string
-          example: 'Celtics'
-        home:
+          format: date
+          example: '2024-05-06'
+        home_name:
           description: Home team name
           type: string
-          example: 'Boston'
-        away:
+          example: 'Celtics'
+        away_name:
           description: Away team name
           type: string
-          example: 'Joseph Mazzulla'
+          example: 'NETS'
+        home_score:
+          description: Home team score
+          type: integer
+          format: uint32
+          example: 123
+        away_score:
+          description: Away team score
+          type: integer
+          format: uint32
+          example: 98
+        winner_name:
+          description: Winner team name
+          type: string
+          example: 'Celtics'
 
     Team:
+      description: Team information
       type: object
       required:
         - name
@@ -192,6 +209,7 @@ components:
           example: 1946
 
     Player:
+      description: Player information
       type: object
       required:
         - name
@@ -199,11 +217,11 @@ components:
         name:
           description: Player name
           type: string
-          example: 'Steven Adams'
+          example: 'Precious Achiuwa'
         team_name:
           description: Team name
           type: string
-          example: 'Celtics'
+          example: 'Knicks'
         position:
           description: Player position
           type: string
@@ -212,20 +230,20 @@ components:
           description: Player birthdate
           type: string
           format: date
-          example: '1968-06-24'
+          example: '1970-05-25'
         height:
           description: Player height
           type: string
-          example: '6-11'
+          example: '6-8'
         weight:
           description: Player weight
           type: integer
           format: uint32
-          example: 265
+          example: 243
         country:
           description: Player country
           type: string
-          example: 'New Zealand'
+          example: 'Nigeria'
 
     PageMeta:
       description: Pagination metadata
@@ -283,6 +301,7 @@ components:
                 example: 'Manager Zoe'
               credential:
                 type: string
+                format: password
                 example: "Manager Zoe's super safe password!"
 
     Records:
