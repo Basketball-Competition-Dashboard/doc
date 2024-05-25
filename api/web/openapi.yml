@@ -39,7 +39,9 @@ paths:
             Set-Cookie:
               schema:
                 type: string
-                example: 'session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=; HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict'
+                example: >-
+                  session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=;
+                  HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict
         '404':
           $ref: '#/components/responses/NotFoundError'
   
@@ -315,9 +317,11 @@ components:
           type: string
           example: 'Precious Achiuwa'
         game_name:
-          description: Game name
+          description: >-
+            Game name in the format of
+            '{Game date} {Home team abbreviation} {Away team abbreviation}'
           type: string
-          format: '[0-9]{2}[0-9]{2}[0-9]{2} [A-Z]{3} [A-Z]{3}'
+          format: '[0-9]{4}-[0-9]{2}-[0-9]{2} [A-Z]{3} [A-Z]{3}'
           example: '240506 HOU MEM'
         assist:
           description: Player assist count
