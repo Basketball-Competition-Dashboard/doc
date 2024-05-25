@@ -118,12 +118,12 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequestError'
 
-  /players:
+  /players/profiles:
     post:
       tags:
         - 球員
-      summary: 取得球員資料
-      description: Get players
+      summary: 取得球員資料 - 介紹
+      description: Get the profiles of players
       requestBody:
         $ref: '#/components/requestBodies/Records'
       responses:
@@ -139,7 +139,35 @@ paths:
                   values:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Player'
+                      $ref: '#/components/schemas/PlayerProfile'
+                required:
+                  - page
+                  - values
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
+  /players/stats:
+    post:
+      tags:
+        - 球員
+      summary: 取得球員資料 - 表現數據
+      description: Get the statistics of players
+      requestBody:
+        $ref: '#/components/requestBodies/Records'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    $ref: '#/components/schemas/PageMeta'
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PlayerStats'
                 required:
                   - page
                   - values
@@ -149,7 +177,7 @@ paths:
 components:
   schemas:
     Game:
-      description: Game information
+      description: Game data
       type: object
       required:
         - id
@@ -191,7 +219,7 @@ components:
           example: 'Celtics'
 
     Team:
-      description: Team information
+      description: Team data
       type: object
       required:
         - id
@@ -220,8 +248,8 @@ components:
           format: int32
           example: 1946
 
-    Player:
-      description: Player information
+    PlayerProfile:
+      description: Player profile data
       type: object
       required:
         - id
@@ -262,6 +290,59 @@ components:
           description: Player country
           type: string
           example: 'Nigeria'
+
+    PlayerStats:
+      description: Player statistical data
+      type: object
+      required:
+        - id
+        - name
+        - game_name
+      properties:
+        id:
+          description: Player ID
+          type: integer
+          format: uint32
+          example: 3695
+        name:
+          description: Player name
+          type: string
+          example: 'Precious Achiuwa'
+        game_name:
+          description: Game name
+          type: string
+          format: '[0-9]{2}[0-9]{2}[0-9]{2} [A-Z]{3} [A-Z]{3}'
+          example: '240506 HOU MEM'
+        assist:
+          description: Player assist count
+          type: integer
+          format: uint32
+          example: 20
+        hit:
+          description: Player hit count
+          type: integer
+          format: uint32
+          example: 5
+        steal:
+          description: Player steal count
+          type: integer
+          format: uint32
+          example: 6
+        rebound:
+          description: Player rebound count
+          type: integer
+          format: uint32
+          example: 25
+        free_throw:
+          description: Player free throw count
+          type: integer
+          format: uint32
+          example: 3
+        score:
+          description: Player score count
+          type: integer
+          format: uint32
+          example: 24
 
     PageMeta:
       description: Pagination metadata
