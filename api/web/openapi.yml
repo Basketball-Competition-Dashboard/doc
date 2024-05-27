@@ -181,6 +181,26 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
+  /games/{id}:
+    delete:
+      tags:
+        - 比賽
+      summary: 刪除比賽資料
+      description: Delete game data
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
   /teams:
     post:
       tags:
@@ -252,6 +272,26 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
+  /teams/{id}:
+    delete:
+      tags:
+        - 球隊
+      summary: 刪除球隊資料
+      description: Delete team data
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
   /player-profiles:
     post:
       tags:
@@ -320,6 +360,26 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+
+  /player-profiles/{id}:
+    delete:
+      tags:
+        - 球員
+      summary: 刪除球員介紹資料
+      description: Delete player profile data
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 
   /player-stats:
     post:
@@ -401,7 +461,38 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
+  /player-stats/{id}:
+    delete:
+      tags:
+        - 球員
+      summary: 刪除球員表現資料
+      description: Delete player statistics data
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
 components:
+  parameters:
+    id:
+      description: Resource ID
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 0
+
   schemas:
     Auth:
       description: Authentication data
@@ -720,7 +811,7 @@ components:
 
   securitySchemes:
     SessionID:
-      type: apiKey
       description: The cookie for authentication
-      in: cookie
       name: session_id
+      in: cookie
+      type: apiKey
