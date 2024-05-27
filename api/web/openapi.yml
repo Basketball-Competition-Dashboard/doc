@@ -22,6 +22,8 @@ tags:
     description: Teams
   - name: 球員
     description: Players
+  - name: 測試
+    description: Testing
 
 paths:
   /auth/login:
@@ -175,6 +177,23 @@ paths:
                   - values
         '400':
           $ref: '#/components/responses/BadRequestError'
+
+  /ping:
+    get:
+      tags:
+        - 測試
+      summary: 測試
+      description: Heartbeat test - Ping Pong!
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - Pong!
+                example: 'Pong!'
 
 components:
   schemas:
