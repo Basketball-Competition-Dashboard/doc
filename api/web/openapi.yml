@@ -10,7 +10,7 @@ externalDocs:
   url: https://github.com/Basketball-Competition-Dashboard
 
 servers:
-  - url: http://{API_SERVER_HOST}/web_api
+  - url: http://127.0.0.1:5000/api/web
     description: Web API service
 
 tags:
