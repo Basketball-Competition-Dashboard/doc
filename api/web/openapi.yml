@@ -63,8 +63,8 @@ paths:
               schema:
                 type: string
                 example: 'session_id=; HttpOnly; Max-Age=0; Path=/; SameSite=Strict'
-        '400':
-          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
   /games:
     post:
@@ -458,7 +458,7 @@ components:
 
   responses:
     BadRequestError:
-      description: Error response for a bad request
+      description: Bad request
       content:
         application/json:
           schema:
@@ -466,10 +466,21 @@ components:
             properties:
               message:
                 type: string
-                example: 'Your request is bad.'
+                example: 'Your request is invalid.'
+    
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'You are not authorized to access this resource.'
     
     NotFoundError:
-      description: Error response for a resource not found
+      description: Not found
       content:
         application/json:
           schema:
@@ -477,7 +488,7 @@ components:
             properties:
               message:
                 type: string
-                example: 'The resource is not found.'
+                example: 'The resource you are accessing is not found.'
 
   securitySchemes:
     session_id:
