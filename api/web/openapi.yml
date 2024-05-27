@@ -343,10 +343,8 @@ components:
       properties:
         field:
           description: Field to sort by
-          type: array
-          items:
-            type: string
-          example: ['name']
+          type: string
+          example: 'name'
         order:
           description: Sort order
           type: string
@@ -392,8 +390,16 @@ components:
                   offset: 0
                   length: 10
                 sort:
-                  field: ['name']
+                  field: 'name'
                   order: 'ascending'
+            'order by date desc':
+              value:
+                page:
+                  offset: 0
+                  length: 20
+                sort:
+                  field: 'date'
+                  order: 'descending'
             'default':
               value: {}
 
