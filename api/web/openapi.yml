@@ -14,6 +14,8 @@ servers:
     description: Web API service
 
 tags:
+  - name: 測試
+    description: Testing
   - name: 認證
     description: Authentication
   - name: 比賽
@@ -22,10 +24,25 @@ tags:
     description: Teams
   - name: 球員
     description: Players
-  - name: 測試
-    description: Testing
 
 paths:
+  /ping:
+    get:
+      tags:
+        - 測試
+      summary: 測試
+      description: Ping Pong!
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - Pong!
+                example: 'Pong!'
+
   /auth/login:
     post:
       tags:
@@ -35,15 +52,8 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/Authentication'
       responses:
-        '204':
-          description: Logged in
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
-                example: >-
-                  session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=;
-                  HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict
+        '201':
+          $ref: '#/components/responses/LoginData'
         '404':
           $ref: '#/components/responses/NotFoundError'
   
@@ -57,12 +67,7 @@ paths:
         - session_id: []
       responses:
         '204':
-          description: Logged out
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
-                example: 'session_id=; HttpOnly; Max-Age=0; Path=/; SameSite=Strict'
+          $ref: '#/components/responses/LogoutData'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
@@ -73,24 +78,10 @@ paths:
       summary: 取得比賽資料
       description: Get games
       requestBody:
-        $ref: '#/components/requestBodies/Records'
+        $ref: '#/components/requestBodies/Pagination'
       responses:
         '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - page
-                  - values
-                properties:
-                  page:
-                    $ref: '#/components/schemas/PageMeta'
-                  values:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Game'
+          $ref: '#/components/responses/GamesData'
         '400':
           $ref: '#/components/responses/BadRequestError'
 
@@ -101,24 +92,10 @@ paths:
       summary: 取得球隊資料
       description: Get teams
       requestBody:
-        $ref: '#/components/requestBodies/Records'
+        $ref: '#/components/requestBodies/Pagination'
       responses:
         '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - page
-                  - values
-                properties:
-                  page:
-                    $ref: '#/components/schemas/PageMeta'
-                  values:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Team'
+          $ref: '#/components/responses/TeamsData'
         '400':
           $ref: '#/components/responses/BadRequestError'
 
@@ -129,24 +106,10 @@ paths:
       summary: 取得球員資料 - 介紹
       description: Get the profiles of players
       requestBody:
-        $ref: '#/components/requestBodies/Records'
+        $ref: '#/components/requestBodies/Pagination'
       responses:
         '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  page:
-                    $ref: '#/components/schemas/PageMeta'
-                  values:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PlayerProfile'
-                required:
-                  - page
-                  - values
+          $ref: '#/components/responses/PlayersProfilesData'
         '400':
           $ref: '#/components/responses/BadRequestError'
 
@@ -157,51 +120,34 @@ paths:
       summary: 取得球員資料 - 表現數據
       description: Get the statistics of players
       requestBody:
-        $ref: '#/components/requestBodies/Records'
+        $ref: '#/components/requestBodies/Pagination'
       responses:
         '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  page:
-                    $ref: '#/components/schemas/PageMeta'
-                  values:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PlayerStats'
-                required:
-                  - page
-                  - values
+          $ref: '#/components/responses/PlayersStatsData'
         '400':
           $ref: '#/components/responses/BadRequestError'
 
-  /ping:
-    get:
-      tags:
-        - 測試
-      summary: 測試
-      description: Ping Pong!
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: string
-                enum:
-                  - Pong!
-                example: 'Pong!'
-
 components:
   schemas:
+    AuthIdentity:
+      description: Account identity
+      type: object
+      required:
+        - name
+        - credential
+      properties:
+        name:
+          type: string
+          example: 'Manager Zoe'
+        credential:
+          type: string
+          format: password
+          example: 'A super safe password!'
+
     Game:
       description: Game data
       type: object
       required:
-        - id
         - date
         - home_name
         - away_name
@@ -243,7 +189,6 @@ components:
       description: Team data
       type: object
       required:
-        - id
         - abbr
         - name
         - city
@@ -279,7 +224,6 @@ components:
       description: Player profile data
       type: object
       required:
-        - id
         - name
       properties:
         id:
@@ -318,11 +262,10 @@ components:
           type: string
           example: 'Nigeria'
 
-    PlayerStats:
+    PlayerStat:
       description: Player statistical data
       type: object
       required:
-        - id
         - name
         - game_name
       properties:
@@ -381,12 +324,12 @@ components:
         - length
       properties:
         offset:
-          description: Page offset in records
+          description: The offset of paginated data
           type: integer
           format: uint32
           example: 0
         length:
-          description: Page length in records
+          description: The length of paginated data
           type: integer
           format: uint32
           example: 10
@@ -419,21 +362,19 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            required:
-              - name
-              - credential
-            properties:
-              name:
-                type: string
-                example: 'Manager Zoe'
-              credential:
-                type: string
-                format: password
-                example: "Manager Zoe's super safe password!"
+            $ref: '#/components/schemas/AuthIdentity'
+          examples:
+            'Demo Jack':
+              value:
+                name: 'Demo Manager Jack'
+                credential: 'Pa55w0rd'
+            'Demo Zoe':
+              value:
+                name: 'Demo Manager Zoe'
+                credential: 'A super safe password!'
 
-    Records:
-      description: The request body for records
+    Pagination:
+      description: The request body for paginated data
       required: true
       content:
         application/json:
@@ -467,7 +408,7 @@ components:
               message:
                 type: string
                 example: 'Your request is invalid.'
-    
+
     UnauthorizedError:
       description: Unauthorized
       content:
@@ -478,7 +419,7 @@ components:
               message:
                 type: string
                 example: 'You are not authorized to access this resource.'
-    
+
     NotFoundError:
       description: Not found
       content:
@@ -489,6 +430,92 @@ components:
               message:
                 type: string
                 example: 'The resource you are accessing is not found.'
+
+    LoginData:
+      description: Logged in
+      headers:
+        Set-Cookie:
+          schema:
+            type: string
+            example: >-
+              session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=;
+              HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict
+  
+    LogoutData:
+      description: Logged out
+      headers:
+        Set-Cookie:
+          schema:
+            type: string
+            example: 'session_id=; HttpOnly; Max-Age=0; Path=/; SameSite=Strict'
+
+    GamesData:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - page
+              - values
+            properties:
+              page:
+                $ref: '#/components/schemas/PageMeta'
+              values:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+    TeamsData:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - page
+              - values
+            properties:
+              page:
+                $ref: '#/components/schemas/PageMeta'
+              values:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+
+    PlayersProfilesData:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - page
+              - values
+            properties:
+              page:
+                $ref: '#/components/schemas/PageMeta'
+              values:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlayerProfile'
+
+    PlayersStatsData:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - page
+              - values
+            properties:
+              page:
+                $ref: '#/components/schemas/PageMeta'
+              values:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlayerStat'
 
   securitySchemes:
     session_id:
