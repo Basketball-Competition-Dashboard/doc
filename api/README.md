@@ -5,7 +5,8 @@
 ## Web API
 
 - [web/openapi.yml](./web/openapi.yml)
-    - OpenAPI Specification for the Web API. You can edit it or convert it into the desired format by using the [Swagger Editor (v4)](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Basketball-Competition-Dashboard/doc/main/api/web/openapi.yml)
+    - The Web API specifications follows the OpenAPI Specification ([OAS](https://swagger.io/specification/)) and RESTful API Naming Conventions ([REST API](https://restfulapi.net/resource-naming/)).
+    - You can edit it or convert it into the desired format by using the [Swagger Editor (v4)](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Basketball-Competition-Dashboard/doc/main/api/web/openapi.yml).
     - The URL to import is [https://raw.githubusercontent.com/Basketball-Competition-Dashboard/doc/main/api/web/openapi.yml](https://raw.githubusercontent.com/Basketball-Competition-Dashboard/doc/main/api/web/openapi.yml)
 
 ## Notes
