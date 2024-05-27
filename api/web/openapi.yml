@@ -141,7 +141,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Games'
             examples:
-              'Create a new game':
+              'Create a game':
                 value:
                   - date: '2024-05-06'
                     home_name: 'Celtics'
@@ -221,7 +221,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Teams'
             examples:
-              'Create a new team':
+              'Create a team':
                 value:
                   - abbr: 'BOS'
                     name: 'Celtics'
@@ -252,12 +252,12 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
-  /players/profiles:
+  /player-profiles:
     post:
       tags:
         - 球員
-      summary: 取得球員資料 - 介紹
-      description: Get the profiles of players
+      summary: 取得球員介紹資料
+      description: Get player profile data set
       requestBody:
         $ref: '#/components/requestBodies/Pagination'
       responses:
@@ -277,13 +277,56 @@ paths:
                     $ref: '#/components/schemas/PlayerProfiles'
         '400':
           $ref: '#/components/responses/BadRequestError'
+    put:
+      tags:
+        - 球員
+      summary: 新增或更新球員介紹資料
+      description: Create or update player profile data set
+      security:
+        - SessionID: []
+      requestBody:
+        description: The request body for player profile data modifications
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerProfiles'
+            examples:
+              'Create a player profile':
+                value:
+                  - name: 'Precious Achiuwa'
+                    team_name: 'Knicks'
+                    position: 'F'
+                    birthdate: '1970-05-25'
+                    height: '6-8'
+                    weight: 243
+                    country: 'Nigeria'
+              'Update a player profile':
+                value:
+                  - id: 3695
+                    name: 'Precious Achiuwa'
+                    team_name: 'Knicks'
+                    position: 'F'
+                    birthdate: '1970-05-25'
+                    height: '6-8'
+                    weight: 244
+                    country: 'Nigeria'
+      responses:
+        '201':
+          description: Created
+        '204':
+          description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
-  /players/stats:
+  /player-stats:
     post:
       tags:
         - 球員
-      summary: 取得球員資料 - 表現數據
-      description: Get the statistics of players
+      summary: 取得球員表現資料
+      description: Get player statistics data set
       requestBody:
         $ref: '#/components/requestBodies/Pagination'
       responses:
@@ -303,6 +346,60 @@ paths:
                     $ref: '#/components/schemas/PlayerStats'
         '400':
           $ref: '#/components/responses/BadRequestError'
+    put:
+      tags:
+        - 球員
+      summary: 新增或更新球員表現資料
+      description: Create or update player statistics data set
+      security:
+        - SessionID: []
+      requestBody:
+        description: The request body for player statistics data modifications
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerStats'
+            examples:
+              'Create a player statistics':
+                value:
+                  - name: 'Precious Achiuwa'
+                    game_name: '240506 HOU MEM'
+                    assist: 20
+                    hit: 5
+                    steal: 6
+                    rebound: 25
+                    free_throw: 2
+                    score: 23
+              'Update two player statistics':
+                value:
+                  - id: 3695
+                    name: 'Precious Achiuwa'
+                    game_name: '240506 HOU MEM'
+                    assist: 20
+                    hit: 5
+                    steal: 6
+                    rebound: 25
+                    free_throw: 3
+                    score: 24
+                  - id: 3696
+                    name: 'Steven Adams'
+                    game_name: '240502 HOU MEM'
+                    assist: 20
+                    hit: 6
+                    steal: 6
+                    rebound: 25
+                    free_throw: 5
+                    score: 23
+      responses:
+        '201':
+          description: Created
+        '204':
+          description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   schemas:
@@ -479,7 +576,7 @@ components:
             '{Game date} {Home team abbreviation} {Away team abbreviation}'
           type: string
           format: '[0-9]{4}-[0-9]{2}-[0-9]{2} [A-Z]{3} [A-Z]{3}'
-          example: '240506 HOU MEM'
+          example: '2024-05-06 HOU MEM'
         assist:
           description: Player assist count
           type: integer
