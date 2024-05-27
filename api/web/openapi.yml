@@ -106,7 +106,7 @@ paths:
       tags:
         - 比賽
       summary: 取得比賽資料
-      description: Get games
+      description: Get game data set
       requestBody:
         $ref: '#/components/requestBodies/Pagination'
       responses:
@@ -126,13 +126,67 @@ paths:
                     $ref: '#/components/schemas/Games'
         '400':
           $ref: '#/components/responses/BadRequestError'
+    put:
+      tags:
+        - 比賽
+      summary: 新增或更新比賽資料
+      description: Create or update game data set
+      security:
+        - SessionID: []
+      requestBody:
+        description: The request body for game data modifications
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Games'
+            examples:
+              'Create a new game':
+                value:
+                  - date: '2024-05-06'
+                    home_name: 'Celtics'
+                    away_name: 'Nets'
+                    home_score: 0
+                    away_score: 0
+              'Update three games':
+                value:
+                  - id: 3001
+                    date: '2024-05-06'
+                    home_name: 'Celtics'
+                    away_name: 'Nets'
+                    home_score: 123
+                    away_score: 98
+                    winner_name: 'Celtics'
+                  - id: 3003
+                    date: '2024-05-02'
+                    home_name: 'Bucks'
+                    away_name: 'Pacers'
+                    home_score: 89
+                    away_score: 85
+                    winner_name: 'Bucks'
+                  - id: 3002
+                    date: '2024-04-23'
+                    home_name: 'Celtics'
+                    away_name: 'Magic'
+                    home_score: 69
+                    away_score: 87
+                    winner_name: 'Magic'
+      responses:
+        '201':
+          description: Created
+        '204':
+          description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
   /teams:
     post:
       tags:
         - 球隊
       summary: 取得球隊資料
-      description: Get teams
+      description: Get team data set
       requestBody:
         $ref: '#/components/requestBodies/Pagination'
       responses:
@@ -152,6 +206,51 @@ paths:
                     $ref: '#/components/schemas/Teams'
         '400':
           $ref: '#/components/responses/BadRequestError'
+    put:
+      tags:
+        - 球隊
+      summary: 新增或更新球隊資料
+      description: Create or update team data set
+      security:
+        - SessionID: []
+      requestBody:
+        description: The request body for team data modifications
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Teams'
+            examples:
+              'Create a new team':
+                value:
+                  - abbr: 'BOS'
+                    name: 'Celtics'
+                    city: 'Boston'
+                    coach: 'John Russell'
+                    year_founded: 1946
+              'Update two teams':
+                value:
+                  - id: 60020
+                    abbr: 'BOS'
+                    name: 'Celtics'
+                    city: 'Boston'
+                    coach: 'Joe Mazzulla'
+                    year_founded: 1946
+                  - id: 60021
+                    abbr: 'MIL'
+                    name: 'Bucks'
+                    city: 'Milwaukee'
+                    coach: 'Glenn Anton Rivers'
+                    year_founded: 1968
+      responses:
+        '201':
+          description: Created
+        '204':
+          description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
   /players/profiles:
     post:
@@ -247,7 +346,7 @@ components:
         away_name:
           description: Away team name
           type: string
-          example: 'NETS'
+          example: 'Nets'
         home_score:
           description: Home team score
           type: integer
