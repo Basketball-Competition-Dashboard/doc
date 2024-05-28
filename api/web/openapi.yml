@@ -181,26 +181,6 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
-  /games/{id}:
-    delete:
-      tags:
-        - 比賽
-      summary: 刪除比賽資料
-      description: Delete game data
-      security:
-        - SessionID: []
-      parameters:
-        - $ref: '#/components/parameters/id'
-      responses:
-        '204':
-          description: Deleted
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-
   /teams:
     post:
       tags:
