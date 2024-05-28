@@ -272,26 +272,6 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
-  /teams/{id}:
-    delete:
-      tags:
-        - 球隊
-      summary: 刪除球隊資料
-      description: Delete team data
-      security:
-        - SessionID: []
-      parameters:
-        - $ref: '#/components/parameters/id'
-      responses:
-        '204':
-          description: Deleted
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-
   /player-profiles:
     post:
       tags:
