@@ -124,6 +124,54 @@ paths:
                     $ref: '#/components/schemas/PageMeta'
                   values:
                     $ref: '#/components/schemas/Games'
+              examples:
+                'five games starting from the offset of 10':
+                  value:
+                    page:
+                      offset: 10
+                      length: 5
+                    values:
+                      - id: 3001
+                        date: '2024-05-06'
+                        home_name: 'Celtics'
+                        away_name: 'Nets'
+                        home_score: 123
+                        away_score: 98
+                        winner_name: 'Celtics'
+                      - id: 3002
+                        date: '2024-05-02'
+                        home_name: 'Bucks'
+                        away_name: 'Pacers'
+                        home_score: 89
+                        away_score: 85
+                        winner_name: 'Bucks'
+                      - id: 3003
+                        date: '2024-04-23'
+                        home_name: 'Celtics'
+                        away_name: 'Magic'
+                        home_score: 69
+                        away_score: 87
+                        winner_name: 'Magic'
+                      - id: 3004
+                        date: '2024-04-20'
+                        home_name: 'Bucks'
+                        away_name: 'Nets'
+                        home_score: 123
+                        away_score: 98
+                        winner_name: 'Bucks'
+                      - id: 3005
+                        date: '2024-04-18'
+                        home_name: 'Celtics'
+                        away_name: 'Pacers'
+                        home_score: 89
+                        away_score: 85
+                        winner_name: 'Celtics'
+                'no game starting from the offset of 8000':
+                  value:
+                    page:
+                      offset: 8000
+                      length: 0
+                    values: []
         '400':
           $ref: '#/components/responses/BadRequestError'
     put:
@@ -204,6 +252,25 @@ paths:
                     $ref: '#/components/schemas/PageMeta'
                   values:
                     $ref: '#/components/schemas/Teams'
+              examples:
+                'one team starting from the offset of 5':
+                  value:
+                    page:
+                      offset: 5
+                      length: 1
+                    values:
+                      - id: 60020
+                        abbr: 'BOS'
+                        name: 'Celtics'
+                        city: 'Boston'
+                        coach: 'Joseph Mazzulla'
+                        year_founded: 1946
+                'no team starting from the offset of 0':
+                  value:
+                    page:
+                      offset: 0
+                      length: 0
+                    values: []
         '400':
           $ref: '#/components/responses/BadRequestError'
     put:
@@ -275,6 +342,35 @@ paths:
                     $ref: '#/components/schemas/PageMeta'
                   values:
                     $ref: '#/components/schemas/PlayerProfiles'
+              examples:
+                'two player profiles starting from the offset of 5':
+                  value:
+                    page:
+                      offset: 5
+                      length: 2
+                    values:
+                      - id: 3695
+                        name: 'Precious Achiuwa'
+                        team_name: 'Knicks'
+                        position: 'F'
+                        birthdate: '1970-05-25'
+                        height: '6-8'
+                        weight: 243
+                        country: 'Nigeria'
+                      - id: 3696
+                        name: 'Steven Adams'
+                        team_name: 'Grizzlies'
+                        position: 'C'
+                        birthdate: '1970-05-25'
+                        height: '6-8'
+                        weight: 265
+                        country: 'New Zealand'
+                'no player profile starting from the offset of 8888':
+                  value:
+                    page:
+                      offset: 8888
+                      length: 0
+                    values: []
         '400':
           $ref: '#/components/responses/BadRequestError'
     put:
@@ -364,6 +460,37 @@ paths:
                     $ref: '#/components/schemas/PageMeta'
                   values:
                     $ref: '#/components/schemas/PlayerStats'
+              examples:
+                'two player stats starting from the offset of 5':
+                  value:
+                    page:
+                      offset: 5
+                      length: 2
+                    values:
+                      - id: 3695
+                        name: 'Precious Achiuwa'
+                        game_name: '240506 HOU MEM'
+                        assist: 20
+                        hit: 5
+                        steal: 6
+                        rebound: 25
+                        free_throw: 2
+                        score: 23
+                      - id: 3696
+                        name: 'Steven Adams'
+                        game_name: '240502 HOU MEM'
+                        assist: 20
+                        hit: 6
+                        steal: 6
+                        rebound: 25
+                        free_throw: 5
+                        score: 23
+                'no player stat starting from the offset of 8888':
+                  value:
+                    page:
+                      offset: 8888
+                      length: 0
+                    values: []
         '400':
           $ref: '#/components/responses/BadRequestError'
     put:
