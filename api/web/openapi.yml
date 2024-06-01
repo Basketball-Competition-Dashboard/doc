@@ -732,6 +732,11 @@ components:
                 sort:
                   field: 'date'
                   order: 'descending'
+            'one record':
+              value:
+                page:
+                  offset: 0
+                  length: 1
             'default':
               value: {}
 
