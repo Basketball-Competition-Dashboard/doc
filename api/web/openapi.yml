@@ -771,7 +771,7 @@ components:
 
   securitySchemes:
     SessionID:
-      description: The cookie for authentication
+      description: The cookie for authorization
       name: session_id
       in: cookie
       type: apiKey
