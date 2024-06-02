@@ -903,7 +903,7 @@ components:
 
   securitySchemes:
     SessionID:
-      description: The cookie for authorization
+      description: The cookie for authorization, which is managed by the server.
       name: session_id
       in: cookie
       type: apiKey
