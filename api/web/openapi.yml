@@ -829,7 +829,7 @@ components:
             'five records sorted by date in descending order':
               value:
                 page:
-                  offset: 0
+                  offset: 5
                   length: 5
                 sort:
                   field: 'date'
