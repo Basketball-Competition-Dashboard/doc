@@ -755,7 +755,7 @@ components:
         $ref: '#/components/schemas/PlayerStat'
 
     PageMeta:
-      description: Pagination metadata
+      description: Page metadata
       type: object
       required:
         - offset
@@ -809,13 +809,16 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - page
+              - sort
             properties:
               page:
                 $ref: '#/components/schemas/PageMeta'
               sort:
                 $ref: '#/components/schemas/SortMeta'
           examples:
-            'order by name asc':
+            'ten records sorted by name in ascending order':
               value:
                 page:
                   offset: 0
@@ -823,7 +826,7 @@ components:
                 sort:
                   field: 'name'
                   order: 'ascending'
-            'order by date desc':
+            'five records sorted by date in descending order':
               value:
                 page:
                   offset: 0
@@ -831,13 +834,6 @@ components:
                 sort:
                   field: 'date'
                   order: 'descending'
-            'one record':
-              value:
-                page:
-                  offset: 0
-                  length: 1
-            'default':
-              value: {}
 
   responses:
     BadRequestError:
