@@ -583,7 +583,7 @@ components:
         - away_name
       properties:
         id:
-          description: Game ID
+          description: Game ID, which only presents in the existing game data.
           type: integer
           format: uint32
           example: 3001
@@ -630,7 +630,7 @@ components:
         - city
       properties:
         id:
-          description: Team ID
+          description: Team ID, which only presents in the existing team data.
           type: integer
           format: uint32
           example: 60020
@@ -669,7 +669,7 @@ components:
         - name
       properties:
         id:
-          description: Player ID
+          description: Player ID, which only presents in the existing player profile data.
           type: integer
           format: uint32
           example: 3695
@@ -718,7 +718,7 @@ components:
         - game_name
       properties:
         id:
-          description: Player ID
+          description: Player ID, which only presents in the existing player stats data.
           type: integer
           format: uint32
           example: 3695
