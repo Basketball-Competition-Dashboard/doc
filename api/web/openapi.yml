@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 info:
   title: 籃球情報室 Web API 文件
-  version: 0.0.0
+  version: 0.1.0
   description: Basketball Competition Dashboard Web API
 
 externalDocs:
@@ -81,6 +81,8 @@ paths:
                 example: >-
                   session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=;
                   HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict
+        '400':
+          $ref: '#/components/responses/BadRequestError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '500':
@@ -108,254 +110,356 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   /games:
-    post:
+    get:
       tags:
         - 比賽
       summary: 取得比賽資料
-      description: Get game data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      description: Get games
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Game data set with ID
+                description: Games
                 type: array
                 items:
-                  description: Game data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
+                  $ref: '#/components/schemas/Game'
               examples:
-                'five games':
+                'three games':
                   value:
                     - id: 3001
+                      away_id: 60019
+                      away_abbr: 'BOS'
+                      home_id: 60020
+                      home_abbr: 'MIL'
+                      away_name: 'Celtics'
+                      home_name: 'Bucks'
                       date: '2024-05-06'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'BKN'
-                      away_name: 'Nets'
-                      home_score: 123
-                      away_score: 98
-                      is_winner_home: true
+                      away_score: 3
+                      home_score: 0
                     - id: 3002
-                      date: '2024-05-02'
-                      home_abbr: 'MIL'
-                      home_name: 'Bucks'
-                      away_abbr: 'IND'
-                      away_name: 'Pacers'
-                      home_score: 89
-                      away_score: 85
-                      is_winner_home: true
+                      away_id: 60020
+                      away_abbr: 'MIL'
+                      home_id: 60021
+                      home_abbr: 'IND'
+                      away_name: 'Bucks'
+                      home_name: 'Pacers'
+                      date: '2024-05-07'
+                      away_score: 2
+                      home_score: 1
                     - id: 3003
-                      date: '2024-04-23'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'ORL'
-                      away_name: 'Magic'
-                      home_score: 69
-                      away_score: 87
-                      is_winner_home: false
-                    - id: 3004
-                      date: '2024-04-20'
-                      home_abbr: 'MIL'
-                      home_name: 'Bucks'
-                      away_abbr: 'BKN'
-                      away_name: 'Nets'
-                      home_score: 123
-                      away_score: 98
-                      is_winner_home: true
-                    - id: 3005
-                      date: '2024-04-18'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
+                      away_id: 60021
                       away_abbr: 'IND'
+                      home_id: 60019
+                      home_abbr: 'BOS'
                       away_name: 'Pacers'
-                      home_score: 89
-                      away_score: 85
-                      is_winner_home: true
+                      home_name: 'Celtics'
+                      date: '2024-05-08'
+                      away_score: 1
+                      home_score: 2
                 'no game':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /game:
+    post:
       tags:
         - 比賽
-      summary: 新增或更新比賽資料
-      description: Create or update game data set
+      summary: 新增比賽資料
+      description: Create a game
       security:
         - SessionID: []
       requestBody:
-        description: The request body for game data modifications
+        description: The request body for creating a game
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Game data set.
-
-                If the `id` field presents, the server will update the game data with the same ID.
-                Otherwise, the server will create a new game data.
-              type: array
-              items:
-                description: Game data to create or update
-                oneOf:
-                  - allOf:
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
+              $ref: '#/components/schemas/GameNew'
             examples:
-              'Create a game':
+              'A request of creating a game':
                 value:
-                  - date: '2024-05-06'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'BKN'
-                    away_name: 'Nets'
-                    home_score: 0
-                    away_score: 0
-              'Update three games':
-                value:
-                  - id: 3001
-                    date: '2024-05-06'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'BKN'
-                    away_name: 'Nets'
-                    home_score: 123
-                    away_score: 98
-                    is_winner_home: true
-                  - id: 3003
-                    date: '2024-05-02'
-                    home_abbr: 'MIL'
-                    home_name: 'Bucks'
-                    away_abbr: 'IND'
-                    away_name: 'Pacers'
-                    home_score: 89
-                    away_score: 85
-                    is_winner_home: true
-                  - id: 3002
-                    date: '2024-04-23'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'ORL'
-                    away_name: 'Magic'
-                    home_score: 69
-                    away_score: 87
-                    is_winner_home: false
+                  away_name: 'Pacers'
+                  home_name: 'Bucks'
+                  date: '2024-05-09'
+                  away_score: 3
+                  home_score: 0
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                description: The new game
+                $ref: '#/components/schemas/Game'
+              examples:
+                'A response of creating a game':
+                  value:
+                    id: 3004
+                    away_id: 60021
+                    away_abbr: 'IND'
+                    home_id: 60020
+                    home_abbr: 'MIL'
+                    away_name: 'Pacers'
+                    home_name: 'Bucks'
+                    date: '2024-05-09'
+                    away_score: 3
+                    home_score: 0
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /game/{id}:
+    patch:
+      tags:
+        - 比賽
+      summary: 更新比賽資料
+      description: Update a game
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: The request body for updating a game
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GamePatch'
+            examples:
+              'A request of updating a game':
+                value:
+                  date: '2024-05-09'
+                  is_home_winner: false
+                  away_score: 30
+                  home_score: 20
+      responses:
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
   /teams:
-    post:
+    get:
       tags:
         - 球隊
       summary: 取得球隊資料
-      description: Get team data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      description: Get teams
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Team data set with ID
+                description: Teams
                 type: array
                 items:
-                  description: Team data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/Team'
+                  $ref: '#/components/schemas/Team'
               examples:
-                'one team':
+                'three teams':
                   value:
-                    - id: 60020
-                      abbr: 'BOS'
-                      name: 'Celtics'
-                      city: 'Boston'
-                      coach: 'Joseph Mazzulla'
-                      year_founded: 1946
+                    - team:
+                        id: 60019
+                        abbr: 'BOS'
+                        name: 'Celtics'
+                        city: 'Boston'
+                        coach: 'Joseph Mazzulla'
+                        year_founded: 1946
+                    - team:
+                        id: 60020
+                        abbr: 'MIL'
+                        name: 'Bucks'
+                        city: 'Milwaukee'
+                        coach: 'Mike Budenholzer'
+                        year_founded: 1968
+                    - team:
+                        id: 60021
+                        abbr: 'IND'
+                        name: 'Pacers'
+                        city: 'Indiana'
+                        coach: 'Rick Carlisle'
+                        year_founded: 1976
                 'no team':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /team:
+    post:
       tags:
         - 球隊
-      summary: 新增或更新球隊資料
-      description: Create or update team data set
+      summary: 新增球隊資料
+      description: Create a team
       security:
         - SessionID: []
       requestBody:
-        description: The request body for team data modifications
+        description: The request body for creating a team
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Team data set.
-
-                If the `id` field presents, the server will update the team data with the same ID.
-                Otherwise, the server will create a new team data.
-              type: array
-              items:
-                description: Team data to create or update
-                oneOf:
-                  - $ref: '#/components/schemas/Team'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/Team'
+              description: A new team
+              type: object
+              required:
+                - team
+              properties:
+                team:
+                  description: The data of the team
+                  type: object
+                  required:
+                    - abbr
+                    - name
+                    - city
+                    - year_founded
+                  properties:
+                    abbr:
+                      description: The abbreviation of the team
+                      type: string
+                      example: 'BOS'
+                    name:
+                      description: The name of the team
+                      type: string
+                      example: 'Celtics'
+                    city:
+                      description: The city of the team
+                      type: string
+                      example: 'Boston'
+                    coach:
+                      description: The coach of the team
+                      type: string
+                      example: 'Joseph Mazzulla'
+                    year_founded:
+                      description: The year the team was founded
+                      type: integer
+                      format: uint32
+                      example: 1946
             examples:
-              'Create a team':
+              'A request of creating a team':
                 value:
-                  - abbr: 'BOS'
-                    name: 'Celtics'
-                    city: 'Boston'
-                    coach: 'John Russell'
-                    year_founded: 1946
-              'Update two teams':
-                value:
-                  - id: 60020
+                  team:
                     abbr: 'BOS'
                     name: 'Celtics'
                     city: 'Boston'
-                    coach: 'Joe Mazzulla'
+                    coach: 'Joseph Mazzulla'
                     year_founded: 1946
-                  - id: 60021
-                    abbr: 'MIL'
-                    name: 'Bucks'
-                    city: 'Milwaukee'
-                    coach: 'Glenn Anton Rivers'
-                    year_founded: 1968
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                description: The new team
+                $ref: '#/components/schemas/Team'
+              examples:
+                'A response of creating a team':
+                  value:
+                    team:
+                      id: 60019
+                      abbr: 'BOS'
+                      name: 'Celtics'
+                      city: 'Boston'
+                      coach: 'Joseph Mazzulla'
+                      year_founded: 1946
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /team/{id}:
+    patch:
+      tags:
+        - 球隊
+      summary: 更新球隊資料
+      description: Update a team
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: The request body for updating a team
+        required: true
+        content:
+          application/json:
+            schema:
+              description: A patch for the team
+              type: object
+              required:
+                - team
+              properties:
+                team:
+                  allOf:
+                    - description: The data of the team
+                      type: object
+                      properties:
+                        abbr:
+                          description: The abbreviation of the team
+                          type: string
+                          example: 'BOS'
+                        name:
+                          description: The name of the team
+                          type: string
+                          example: 'Celtics'
+                        city:
+                          description: The city of the team
+                          type: string
+                          example: 'Boston'
+                        coach:
+                          description: The coach of the team
+                          type: string
+                          example: 'Joseph Mazzulla'
+                        year_founded:
+                          description: The year the team was founded
+                          type: integer
+                          format: uint32
+                          example: 1946
+                    - type: object
+                      required:
+                        - coach
+            examples:
+              'A request of updating a team':
+                value:
+                  team:
+                    coach: 'Joseph Mazzulla'
+      responses:
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -646,6 +750,43 @@ components:
         type: integer
         format: uint32
         example: 0
+    page_offset:
+      description: The offset of paginated data
+      name: page_offset
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 0
+    page_length:
+      description: The length of paginated data
+      name: page_length
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 3
+    sort_field:
+      description: Field to sort by
+      name: sort_field
+      in: query
+      required: true
+      schema:
+        type: string
+        example: 'name'
+    sort_order:
+      description: Sort order
+      name: sort_order
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - 'ascending'
+          - 'descending'
+        example: 'descending'
 
   schemas:
     Auth:
@@ -675,86 +816,116 @@ components:
           format: uint32
           example: 0
 
-    GameHeader:
-      description: Game header data
+    Game:
+      description: A game
+      allOf:
+        - type: object
+          required:
+            - id
+            - away_id
+            - away_abbr
+            - home_id
+            - home_abbr
+          properties:
+            id:
+              description: The ID of the game
+              type: integer
+              format: uint32
+            away_id:
+              description: The ID of the away team
+              type: integer
+              format: uint32
+            away_abbr:
+              description: The abbreviation of the away team
+              type: string
+            home_id:
+              description: The ID of the home team
+              type: integer
+              format: uint32
+            home_abbr:
+              description: The abbreviation of the home team
+              type: string
+        - $ref: '#/components/schemas/GameNew'
+
+    GameNew:
+      description: A new game
+      allOf:
+        - type: object
+          required:
+            - away_name
+            - home_name
+            - date
+          properties:
+            away_name:
+              description: The name of the away team
+              type: string
+            home_name:
+              description: The name of the home team
+              type: string
+        - $ref: '#/components/schemas/GamePatch'
+
+    GamePatch:
+      description: A patch for the game
       type: object
-      required:
-        - date
-        - home_abbr
-        - home_name
-        - away_abbr
-        - away_name
       properties:
         date:
-          description: Date of the game
+          description: The date of the game
           type: string
           format: date
-          example: '2024-05-06'
-        home_abbr:
-          description: Home team abbreviation
-          type: string
-          example: 'BOS'
-        home_name:
-          description: Home team name
-          type: string
-          example: 'Celtics'
-        away_abbr:
-          description: Away team abbreviation
-          type: string
-          example: 'BKN'
-        away_name:
-          description: Away team name
-          type: string
-          example: 'Nets'
-
-    GameMain:
-      description: Game main data
-      type: object
-      properties:
-        home_score:
-          description: Home team score
-          type: integer
-          format: uint32
-          example: 123
-        away_score:
-          description: Away team score
-          type: integer
-          format: uint32
-          example: 98
-        is_winner_home:
+        is_home_winner:
           description: Is the home team the winner
           type: boolean
-          example: true
-
-    Team:
-      description: Team data
-      type: object
-      required:
-        - abbr
-        - name
-        - city
-      properties:
-        abbr:
-          description: Team abbreviation
-          type: string
-          example: 'BOS'
-        name:
-          description: Team name
-          type: string
-          example: 'Celtics'
-        city:
-          description: Team city
-          type: string
-          example: 'Boston'
-        coach:
-          description: Team coach name
-          type: string
-          example: 'Joseph Mazzulla'
-        year_founded:
-          description: Team founded year
+        away_score:
+          description: The score of the away team
           type: integer
           format: uint32
-          example: 1946
+        home_score:
+          description: The score of the home team
+          type: integer
+          format: uint32
+
+    Team:
+      description: A team
+      type: object
+      required:
+        - team
+      properties:
+        team:
+          description: The data of the team
+          type: object
+          required:
+            - id
+            - abbr
+            - name
+            - city
+            - year_founded
+          properties:
+            id:
+              description: The ID of the team
+              type: integer
+              format: uint32
+              example: 60019
+            abbr:
+              description: The abbreviation of the team
+              type: string
+              example: 'BOS'
+            name:
+              description: The name of the team
+              type: string
+              example: 'Celtics'
+            city:
+              description: The city of the team
+              type: string
+              example: 'Boston'
+            coach:
+              description: The coach of the team
+              type: string
+              example: 'Joseph Mazzulla'
+            year_founded:
+              description: The year the team was founded
+              type: integer
+              format: uint32
+              example: 1946
 
     PlayerProfile:
       description: Player profile data
@@ -804,8 +975,6 @@ components:
           description: Player name
           type: string
           example: 'Precious Achiuwa'
-        game:
-          $ref: '#/components/schemas/GameHeader'
 
     PlayerStatMain:
       description: Player statistics main data
