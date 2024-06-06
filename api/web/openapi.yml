@@ -653,7 +653,7 @@ components:
         year_founded:
           description: Team founded year
           type: integer
-          format: int32
+          format: uint32
           example: 1946
 
     Teams:
