@@ -124,47 +124,59 @@ paths:
                 description: Game data set with ID
                 type: array
                 items:
+                  description: Game data with ID
                   allOf:
                     - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/Game'
+                    - $ref: '#/components/schemas/GameHeader'
+                    - $ref: '#/components/schemas/GameMain'
               examples:
                 'five games':
                   value:
                     - id: 3001
                       date: '2024-05-06'
+                      home_abbr: 'BOS'
                       home_name: 'Celtics'
+                      away_abbr: 'BKN'
                       away_name: 'Nets'
                       home_score: 123
                       away_score: 98
-                      winner_name: 'Celtics'
+                      is_winner_home: true
                     - id: 3002
                       date: '2024-05-02'
+                      home_abbr: 'MIL'
                       home_name: 'Bucks'
+                      away_abbr: 'IND'
                       away_name: 'Pacers'
                       home_score: 89
                       away_score: 85
-                      winner_name: 'Bucks'
+                      is_winner_home: true
                     - id: 3003
                       date: '2024-04-23'
+                      home_abbr: 'BOS'
                       home_name: 'Celtics'
+                      away_abbr: 'ORL'
                       away_name: 'Magic'
                       home_score: 69
                       away_score: 87
-                      winner_name: 'Magic'
+                      is_winner_home: false
                     - id: 3004
                       date: '2024-04-20'
+                      home_abbr: 'MIL'
                       home_name: 'Bucks'
+                      away_abbr: 'BKN'
                       away_name: 'Nets'
                       home_score: 123
                       away_score: 98
-                      winner_name: 'Bucks'
+                      is_winner_home: true
                     - id: 3005
                       date: '2024-04-18'
+                      home_abbr: 'BOS'
                       home_name: 'Celtics'
+                      away_abbr: 'IND'
                       away_name: 'Pacers'
                       home_score: 89
                       away_score: 85
-                      winner_name: 'Celtics'
+                      is_winner_home: true
                 'no game':
                   value: []
         '400':
@@ -191,16 +203,22 @@ paths:
                 Otherwise, the server will create a new game data.
               type: array
               items:
+                description: Game data to create or update
                 oneOf:
-                  - $ref: '#/components/schemas/Game'
+                  - allOf:
+                    - $ref: '#/components/schemas/GameHeader'
+                    - $ref: '#/components/schemas/GameMain'
                   - allOf:
                     - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/Game'
+                    - $ref: '#/components/schemas/GameHeader'
+                    - $ref: '#/components/schemas/GameMain'
             examples:
               'Create a game':
                 value:
                   - date: '2024-05-06'
+                    home_abbr: 'BOS'
                     home_name: 'Celtics'
+                    away_abbr: 'BKN'
                     away_name: 'Nets'
                     home_score: 0
                     away_score: 0
@@ -208,25 +226,31 @@ paths:
                 value:
                   - id: 3001
                     date: '2024-05-06'
+                    home_abbr: 'BOS'
                     home_name: 'Celtics'
+                    away_abbr: 'BKN'
                     away_name: 'Nets'
                     home_score: 123
                     away_score: 98
-                    winner_name: 'Celtics'
+                    is_winner_home: true
                   - id: 3003
                     date: '2024-05-02'
+                    home_abbr: 'MIL'
                     home_name: 'Bucks'
+                    away_abbr: 'IND'
                     away_name: 'Pacers'
                     home_score: 89
                     away_score: 85
-                    winner_name: 'Bucks'
+                    is_winner_home: true
                   - id: 3002
                     date: '2024-04-23'
+                    home_abbr: 'BOS'
                     home_name: 'Celtics'
+                    away_abbr: 'ORL'
                     away_name: 'Magic'
                     home_score: 69
                     away_score: 87
-                    winner_name: 'Magic'
+                    is_winner_home: false
       responses:
         '201':
           description: Created
@@ -256,6 +280,7 @@ paths:
                 description: Team data set with ID
                 type: array
                 items:
+                  description: Team data with ID
                   allOf:
                     - $ref: '#/components/schemas/WithID'
                     - $ref: '#/components/schemas/Team'
@@ -294,6 +319,7 @@ paths:
                 Otherwise, the server will create a new team data.
               type: array
               items:
+                description: Team data to create or update
                 oneOf:
                   - $ref: '#/components/schemas/Team'
                   - allOf:
@@ -350,6 +376,7 @@ paths:
                 description: Player profile data set with ID
                 type: array
                 items:
+                  description: Player profile data with ID
                   allOf:
                     - $ref: '#/components/schemas/WithID'
                     - $ref: '#/components/schemas/PlayerProfile'
@@ -398,6 +425,7 @@ paths:
                 Otherwise, the server will create a new player profile data.
               type: array
               items:
+                description: Player profile data to create or update
                 oneOf:
                   - $ref: '#/components/schemas/PlayerProfile'
                   - allOf:
@@ -477,6 +505,10 @@ paths:
                   description: Player statistics data with ID
                   allOf:
                     - $ref: '#/components/schemas/WithID'
+                    - type: object
+                      properties:
+                        game:
+                          $ref: '#/components/schemas/WithID'
                     - $ref: '#/components/schemas/PlayerStatHeader'
                     - $ref: '#/components/schemas/PlayerStatMain'
               examples:
@@ -484,7 +516,11 @@ paths:
                   value:
                     - id: 3695
                       name: 'Precious Achiuwa'
-                      game_name: '240506 HOU MEM'
+                      game:
+                        id: 240506
+                        date: '2024-05-06'
+                        home_name: 'Celtics'
+                        away_name: 'Nets'
                       assist: 20
                       hit: 5
                       steal: 6
@@ -533,6 +569,10 @@ paths:
                     - $ref: '#/components/schemas/PlayerStatMain'
                   - allOf:
                     - $ref: '#/components/schemas/WithID'
+                    - type: object
+                      properties:
+                        game:
+                          $ref: '#/components/schemas/WithID'
                     - $ref: '#/components/schemas/PlayerStatMain'
             examples:
               'Create a player statistics':
@@ -635,12 +675,14 @@ components:
           format: uint32
           example: 0
 
-    Game:
-      description: Game data
+    GameHeader:
+      description: Game header data
       type: object
       required:
         - date
+        - home_abbr
         - home_name
+        - away_abbr
         - away_name
       properties:
         date:
@@ -648,14 +690,27 @@ components:
           type: string
           format: date
           example: '2024-05-06'
+        home_abbr:
+          description: Home team abbreviation
+          type: string
+          example: 'BOS'
         home_name:
           description: Home team name
           type: string
           example: 'Celtics'
+        away_abbr:
+          description: Away team abbreviation
+          type: string
+          example: 'BKN'
         away_name:
           description: Away team name
           type: string
           example: 'Nets'
+
+    GameMain:
+      description: Game main data
+      type: object
+      properties:
         home_score:
           description: Home team score
           type: integer
@@ -666,10 +721,10 @@ components:
           type: integer
           format: uint32
           example: 98
-        winner_name:
-          description: Winner team name
-          type: string
-          example: 'Celtics'
+        is_winner_home:
+          description: Is the home team the winner
+          type: boolean
+          example: true
 
     Team:
       description: Team data
@@ -743,19 +798,14 @@ components:
       type: object
       required:
         - name
-        - game_name
+        - game
       properties:
         name:
           description: Player name
           type: string
           example: 'Precious Achiuwa'
-        game_name:
-          description: >-
-            Game name in the format of
-            '{Game date} {Home team abbreviation} {Away team abbreviation}'
-          type: string
-          format: '[0-9]{4}-[0-9]{2}-[0-9]{2} [A-Z]{3} [A-Z]{3}'
-          example: '2024-05-06 HOU MEM'
+        game:
+          $ref: '#/components/schemas/GameHeader'
 
     PlayerStatMain:
       description: Player statistics main data
