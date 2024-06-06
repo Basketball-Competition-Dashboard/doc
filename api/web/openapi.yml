@@ -770,8 +770,8 @@ components:
       items:
         $ref: '#/components/schemas/PlayerStat'
 
-    PageMeta:
-      description: Page metadata
+    PageOptions:
+      description: Page options
       type: object
       required:
         - offset
@@ -788,8 +788,8 @@ components:
           format: uint32
           example: 10
 
-    SortMeta:
-      description: Sorting metadata
+    SortOptions:
+      description: Sort options
       type: object
       required:
         - field
@@ -830,9 +830,9 @@ components:
               - sort
             properties:
               page:
-                $ref: '#/components/schemas/PageMeta'
+                $ref: '#/components/schemas/PageOptions'
               sort:
-                $ref: '#/components/schemas/SortMeta'
+                $ref: '#/components/schemas/SortOptions'
           examples:
             'ten records sorted by name in ascending order':
               value:
