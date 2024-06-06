@@ -174,7 +174,11 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: The request body for game data modifications
+        description: |
+          The request body for game data modifications.
+
+          If the `id` field is provided, the server will update the game data with the same ID.
+          Otherwise, the server will create a new game data.
         required: true
         content:
           application/json:
@@ -261,7 +265,11 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: The request body for team data modifications
+        description: |
+          The request body for team data modifications.
+
+          If the `id` field is provided, the server will update the team data with the same ID.
+          Otherwise, the server will create a new team data.
         required: true
         content:
           application/json:
@@ -349,7 +357,11 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: The request body for player profile data modifications
+        description: |
+          The request body for player profile data modifications.
+
+          If the `id` field is provided, the server will update the player profile data with the same ID.
+          Otherwise, the server will create a new player profile data.
         required: true
         content:
           application/json:
@@ -459,7 +471,11 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: The request body for player statistics data modifications
+        description: |
+          The request body for player statistics data modifications.
+
+          If the `id` field is provided, the server will update the player statistics data with the same ID.
+          Otherwise, the server will create a new player statistics data.
         required: true
         content:
           application/json:
