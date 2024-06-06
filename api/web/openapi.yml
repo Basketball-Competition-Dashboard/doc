@@ -121,7 +121,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Games'
+                description: Game data set with ID
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/Game'
               examples:
                 'five games':
                   value:
@@ -174,16 +179,23 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: |
-          The request body for game data modifications.
-
-          If the `id` field is provided, the server will update the game data with the same ID.
-          Otherwise, the server will create a new game data.
+        description: The request body for game data modifications
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Games'
+              description: |
+                Game data set.
+
+                If the `id` field presents, the server will update the game data with the same ID.
+                Otherwise, the server will create a new game data.
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/Game'
+                  - allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/Game'
             examples:
               'Create a game':
                 value:
@@ -241,7 +253,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Teams'
+                description: Team data set with ID
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/Team'
               examples:
                 'one team':
                   value:
@@ -265,16 +282,23 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: |
-          The request body for team data modifications.
-
-          If the `id` field is provided, the server will update the team data with the same ID.
-          Otherwise, the server will create a new team data.
+        description: The request body for team data modifications
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Teams'
+              description: |
+                Team data set.
+
+                If the `id` field presents, the server will update the team data with the same ID.
+                Otherwise, the server will create a new team data.
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/Team'
+                  - allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/Team'
             examples:
               'Create a team':
                 value:
@@ -323,7 +347,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlayerProfiles'
+                description: Player profile data set with ID
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/PlayerProfile'
               examples:
                 'two player profiles':
                   value:
@@ -357,16 +386,23 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: |
-          The request body for player profile data modifications.
-
-          If the `id` field is provided, the server will update the player profile data with the same ID.
-          Otherwise, the server will create a new player profile data.
+        description: The request body for player profile data modifications
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlayerProfiles'
+              description: |
+                Player profile data set.
+
+                If the `id` field presents, the server will update the player profile data with the same ID.
+                Otherwise, the server will create a new player profile data.
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/PlayerProfile'
+                  - allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/PlayerProfile'
             examples:
               'Create a player profile':
                 value:
@@ -435,7 +471,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlayerStats'
+                description: Player statistics data set with ID
+                type: array
+                items:
+                  description: Player statistics data with ID
+                  allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/PlayerStatHeader'
+                    - $ref: '#/components/schemas/PlayerStatMain'
               examples:
                 'two player stats':
                   value:
@@ -471,16 +514,26 @@ paths:
       security:
         - SessionID: []
       requestBody:
-        description: |
-          The request body for player statistics data modifications.
-
-          If the `id` field is provided, the server will update the player statistics data with the same ID.
-          Otherwise, the server will create a new player statistics data.
+        description: The request body for player statistics data modifications
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlayerStats'
+              description: |
+                Player statistics data set.
+
+                If the `id` field presents, the server will update the player statistics data with the same ID.
+                Otherwise, the server will create a new player statistics data.
+              type: array
+              items:
+                description: Player statistics data to create or update
+                oneOf:
+                  - allOf:
+                    - $ref: '#/components/schemas/PlayerStatHeader'
+                    - $ref: '#/components/schemas/PlayerStatMain'
+                  - allOf:
+                    - $ref: '#/components/schemas/WithID'
+                    - $ref: '#/components/schemas/PlayerStatMain'
             examples:
               'Create a player statistics':
                 value:
@@ -495,8 +548,6 @@ paths:
               'Update two player statistics':
                 value:
                   - id: 3695
-                    name: 'Precious Achiuwa'
-                    game_name: '240506 HOU MEM'
                     assist: 20
                     hit: 5
                     steal: 6
@@ -504,8 +555,6 @@ paths:
                     free_throw: 3
                     score: 24
                   - id: 3696
-                    name: 'Steven Adams'
-                    game_name: '240502 HOU MEM'
                     assist: 20
                     hit: 6
                     steal: 6
@@ -574,6 +623,18 @@ components:
           format: password
           example: 'A super safe password!'
 
+    WithID:
+      description: Resource with ID
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          description: Resource ID
+          type: integer
+          format: uint32
+          example: 0
+
     Game:
       description: Game data
       type: object
@@ -582,11 +643,6 @@ components:
         - home_name
         - away_name
       properties:
-        id:
-          description: Game ID, which only presents in the existing game data.
-          type: integer
-          format: uint32
-          example: 3001
         date:
           description: Date of the game
           type: string
@@ -615,12 +671,6 @@ components:
           type: string
           example: 'Celtics'
 
-    Games:
-      description: Game data set
-      type: array
-      items:
-        $ref: '#/components/schemas/Game'
-
     Team:
       description: Team data
       type: object
@@ -629,11 +679,6 @@ components:
         - name
         - city
       properties:
-        id:
-          description: Team ID, which only presents in the existing team data.
-          type: integer
-          format: uint32
-          example: 60020
         abbr:
           description: Team abbreviation
           type: string
@@ -656,23 +701,12 @@ components:
           format: uint32
           example: 1946
 
-    Teams:
-      description: Team data set
-      type: array
-      items:
-        $ref: '#/components/schemas/Team'
-
     PlayerProfile:
       description: Player profile data
       type: object
       required:
         - name
       properties:
-        id:
-          description: Player ID, which only presents in the existing player profile data.
-          type: integer
-          format: uint32
-          example: 3695
         name:
           description: Player name
           type: string
@@ -703,25 +737,14 @@ components:
           description: Player country
           type: string
           example: 'Nigeria'
-
-    PlayerProfiles:
-      description: Player profile data set
-      type: array
-      items:
-        $ref: '#/components/schemas/PlayerProfile'
-
-    PlayerStat:
-      description: Player statistics data
+    
+    PlayerStatHeader:
+      description: Player statistics header data
       type: object
       required:
         - name
         - game_name
       properties:
-        id:
-          description: Player ID, which only presents in the existing player stats data.
-          type: integer
-          format: uint32
-          example: 3695
         name:
           description: Player name
           type: string
@@ -733,6 +756,11 @@ components:
           type: string
           format: '[0-9]{4}-[0-9]{2}-[0-9]{2} [A-Z]{3} [A-Z]{3}'
           example: '2024-05-06 HOU MEM'
+
+    PlayerStatMain:
+      description: Player statistics main data
+      type: object
+      properties:
         assist:
           description: Player assist count
           type: integer
@@ -763,12 +791,6 @@ components:
           type: integer
           format: uint32
           example: 24
-
-    PlayerStats:
-      description: Player statistics data set
-      type: array
-      items:
-        $ref: '#/components/schemas/PlayerStat'
 
     PageOptions:
       description: Page options
