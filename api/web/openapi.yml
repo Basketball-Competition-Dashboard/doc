@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 info:
   title: 籃球情報室 Web API 文件
-  version: 0.0.0
+  version: 0.1.0
   description: Basketball Competition Dashboard Web API
 
 externalDocs:
@@ -81,6 +81,8 @@ paths:
                 example: >-
                   session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=;
                   HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict
+        '400':
+          $ref: '#/components/responses/BadRequestError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '500':
@@ -108,158 +110,267 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   /games:
-    post:
+    get:
       tags:
         - 比賽
       summary: 取得比賽資料
-      description: Get game data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      description: Get games
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Game data set with ID
+                description: Games
                 type: array
                 items:
-                  description: Game data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
+                  $ref: '#/components/schemas/Game'
               examples:
-                'five games':
+                'three games':
                   value:
-                    - id: 3001
-                      date: '2024-05-06'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'BKN'
-                      away_name: 'Nets'
-                      home_score: 123
-                      away_score: 98
-                      is_winner_home: true
-                    - id: 3002
-                      date: '2024-05-02'
-                      home_abbr: 'MIL'
-                      home_name: 'Bucks'
-                      away_abbr: 'IND'
-                      away_name: 'Pacers'
-                      home_score: 89
-                      away_score: 85
-                      is_winner_home: true
-                    - id: 3003
-                      date: '2024-04-23'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'ORL'
-                      away_name: 'Magic'
-                      home_score: 69
-                      away_score: 87
-                      is_winner_home: false
-                    - id: 3004
-                      date: '2024-04-20'
-                      home_abbr: 'MIL'
-                      home_name: 'Bucks'
-                      away_abbr: 'BKN'
-                      away_name: 'Nets'
-                      home_score: 123
-                      away_score: 98
-                      is_winner_home: true
-                    - id: 3005
-                      date: '2024-04-18'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'IND'
-                      away_name: 'Pacers'
-                      home_score: 89
-                      away_score: 85
-                      is_winner_home: true
+                    - game:
+                        id: 3001
+                        date: '2024-05-06'
+                        is_home_winner: true
+                      team:
+                        away:
+                          id: 60020
+                          abbr: 'BKN'
+                          name: 'Nets'
+                          score: 98
+                        home:
+                          id: 60019
+                          abbr: 'BOS'
+                          name: 'Celtics'
+                          score: 123
+                    - game:
+                        id: 3002
+                        date: '2024-05-02'
+                        is_home_winner: true
+                      team:
+                        away:
+                          id: 60021
+                          abbr: 'IND'
+                          name: 'Pacers'
+                          score: 85
+                        home:
+                          id: 60020
+                          abbr: 'MIL'
+                          name: 'Bucks'
+                          score: 89
+                    - game:
+                        id: 3003
+                        date: '2024-04-23'
+                      team:
+                        away:
+                          id: 60019
+                          abbr: 'ORL'
+                          name: 'Magic'
+                        home:
+                          id: 60019
+                          abbr: 'BOS'
+                          name: 'Celtics'
                 'no game':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /game:
+    post:
       tags:
         - 比賽
-      summary: 新增或更新比賽資料
-      description: Create or update game data set
+      summary: 新增比賽資料
+      description: Create a game
       security:
         - SessionID: []
       requestBody:
-        description: The request body for game data modifications
+        description: The request body for creating a game
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Game data set.
+              description: A new game
+              type: object
+              properties:
+                game:
+                  description: The data of the game
+                  type: object
+                  required:
+                    - date
+                  properties:
+                    date:
+                      description: The date of the game
+                      type: string
+                      format: date
+                    is_home_winner:
+                      description: Is the home team the winner
+                      type: boolean
+                team:
+                  description: The data of the teams in the game
+                  type: object
+                  required:
+                    - away
+                    - home
+                  properties:
+                    away:
+                      description: The away team
+                      type: object
+                      required:
+                        - name
+                      properties:
+                        name:
+                          description: |
+                            The name of the away team.
 
-                If the `id` field presents, the server will update the game data with the same ID.
-                Otherwise, the server will create a new game data.
-              type: array
-              items:
-                description: Game data to create or update
-                oneOf:
-                  - allOf:
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
+                            There should be a team with the same name 
+                            or the request will be rejected.
+                          type: string
+                        score:
+                          description: The score of the away team
+                          type: integer
+                          format: uint32
+                    home:
+                      description: The home team
+                      type: object
+                      required:
+                        - name
+                      properties:
+                        name:
+                          description: |
+                            The name of the home team.
+
+                            There should be a team with the same name 
+                            or the request will be rejected.
+                          type: string
+                        score:
+                          description: The score of the home team
+                          type: integer
+                          format: uint32
             examples:
-              'Create a game':
+              'A request of creating a game':
                 value:
-                  - date: '2024-05-06'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'BKN'
-                    away_name: 'Nets'
-                    home_score: 0
-                    away_score: 0
-              'Update three games':
-                value:
-                  - id: 3001
-                    date: '2024-05-06'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'BKN'
-                    away_name: 'Nets'
-                    home_score: 123
-                    away_score: 98
-                    is_winner_home: true
-                  - id: 3003
-                    date: '2024-05-02'
-                    home_abbr: 'MIL'
-                    home_name: 'Bucks'
-                    away_abbr: 'IND'
-                    away_name: 'Pacers'
-                    home_score: 89
-                    away_score: 85
-                    is_winner_home: true
-                  - id: 3002
-                    date: '2024-04-23'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'ORL'
-                    away_name: 'Magic'
-                    home_score: 69
-                    away_score: 87
-                    is_winner_home: false
+                  game:
+                    date: '2024-05-09'
+                  team:
+                    away:
+                      name: 'Pacers'
+                      score: 3
+                    home:
+                      name: 'Bucks'
+                      score: 0
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                description: The new game
+                $ref: '#/components/schemas/Game'
+              examples:
+                'A response of creating a game':
+                  value:
+                    game:
+                      id: 3004
+                      date: '2024-05-09'
+                    team:
+                      away:
+                        id: 60021
+                        abbr: 'IND'
+                        name: 'Pacers'
+                        score: 3
+                      home:
+                        id: 60020
+                        abbr: 'MIL'
+                        name: 'Bucks'
+                        score: 0
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /game/{id}:
+    patch:
+      tags:
+        - 比賽
+      summary: 更新比賽資料
+      description: Update a game
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: The request body for updating a game
+        required: true
+        content:
+          application/json:
+            schema:
+              description: A patch for the game
+              type: object
+              required:
+                - game
+                - team
+              properties:
+                game:
+                  description: The data of the game
+                  type: object
+                  properties:
+                    date:
+                      description: The date of the game
+                      type: string
+                      format: date
+                    is_home_winner:
+                      description: Is the home team the winner
+                      type: boolean
+                team:
+                  description: The data of the teams in the game
+                  type: object
+                  properties:
+                    away:
+                      description: The away team
+                      type: object
+                      properties:
+                        score:
+                          description: The score of the away team
+                          type: integer
+                          format: uint32
+                    home:
+                      description: The home team
+                      type: object
+                      properties:
+                        score:
+                          description: The score of the home team
+                          type: integer
+                          format: uint32
+            examples:
+              'A request of updating a game':
+                value:
+                  game:
+                    date: '2024-05-09'
+                  team:
+                    away:
+                      score: 3
+                    home:
+                      score: 0
+      responses:
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -646,6 +757,43 @@ components:
         type: integer
         format: uint32
         example: 0
+    page_offset:
+      description: The offset of paginated data
+      name: page_offset
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 0
+    page_length:
+      description: The length of paginated data
+      name: page_length
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 10
+    sort_field:
+      description: Field to sort by
+      name: sort_field
+      in: query
+      required: true
+      schema:
+        type: string
+        example: 'name'
+    sort_order:
+      description: Sort order
+      name: sort_order
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - 'ascending'
+          - 'descending'
+        example: 'descending'
 
   schemas:
     Auth:
@@ -675,56 +823,79 @@ components:
           format: uint32
           example: 0
 
-    GameHeader:
-      description: Game header data
-      type: object
-      required:
-        - date
-        - home_abbr
-        - home_name
-        - away_abbr
-        - away_name
-      properties:
-        date:
-          description: Date of the game
-          type: string
-          format: date
-          example: '2024-05-06'
-        home_abbr:
-          description: Home team abbreviation
-          type: string
-          example: 'BOS'
-        home_name:
-          description: Home team name
-          type: string
-          example: 'Celtics'
-        away_abbr:
-          description: Away team abbreviation
-          type: string
-          example: 'BKN'
-        away_name:
-          description: Away team name
-          type: string
-          example: 'Nets'
-
-    GameMain:
-      description: Game main data
+    Game:
+      description: A game
       type: object
       properties:
-        home_score:
-          description: Home team score
-          type: integer
-          format: uint32
-          example: 123
-        away_score:
-          description: Away team score
-          type: integer
-          format: uint32
-          example: 98
-        is_winner_home:
-          description: Is the home team the winner
-          type: boolean
-          example: true
+        game:
+          description: The data of the game
+          type: object
+          required:
+            - id
+            - date
+          properties:
+            id:
+              description: The ID of the game
+              type: integer
+              format: uint32
+            date:
+              description: The date of the game
+              type: string
+              format: date
+            is_home_winner:
+              description: Is the home team the winner
+              type: boolean
+        team:
+          description: The data of the teams in the game
+          type: object
+          required:
+            - away
+            - home
+          properties:
+            away:
+              description: The away team
+              type: object
+              required:
+                - id
+                - abbr
+                - name
+              properties:
+                id:
+                  description: The ID of the away team
+                  type: integer
+                  format: uint32
+                abbr:
+                  description: The abbreviation of the away team
+                  type: string
+                name:
+                  description: The name of the away team
+                  type: string
+                score:
+                  description: The score of the away team
+                  type: integer
+                  format: uint32
+            home:
+              description: The home team
+              type: object
+              required:
+                - id
+                - abbr
+                - name
+              properties:
+                id:
+                  description: The ID of the home team
+                  type: integer
+                  format: uint32
+                abbr:
+                  description: The abbreviation of the home team
+                  type: string
+                name:
+                  description: The name of the home team
+                  type: string
+                score:
+                  description: The score of the home team
+                  type: integer
+                  format: uint32
 
     Team:
       description: Team data
@@ -804,8 +975,6 @@ components:
           description: Player name
           type: string
           example: 'Precious Achiuwa'
-        game:
-          $ref: '#/components/schemas/GameHeader'
 
     PlayerStatMain:
       description: Player statistics main data
