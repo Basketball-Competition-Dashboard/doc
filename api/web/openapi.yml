@@ -153,31 +153,33 @@ paths:
                       away_abbr: 'BOS'
                       home_id: 60020
                       home_abbr: 'MIL'
+                      date: '2024-05-06'
                       away_name: 'Celtics'
                       home_name: 'Bucks'
-                      date: '2024-05-06'
-                      away_score: 3
-                      home_score: 0
+                      away_score: 100
+                      home_score: 105
+                      is_home_winner: true
                     - id: 3002
                       away_id: 60020
                       away_abbr: 'MIL'
                       home_id: 60021
                       home_abbr: 'IND'
+                      date: '2024-05-07'
                       away_name: 'Bucks'
                       home_name: 'Pacers'
-                      date: '2024-05-07'
-                      away_score: 2
-                      home_score: 1
+                      away_score: 110
+                      home_score: 105
+                      is_home_winner: false
                     - id: 3003
                       away_id: 60021
                       away_abbr: 'IND'
                       home_id: 60019
                       home_abbr: 'BOS'
+                      date: '2024-05-08'
                       away_name: 'Pacers'
                       home_name: 'Celtics'
-                      date: '2024-05-08'
-                      away_score: 1
-                      home_score: 2
+                      away_score: 105
+                      home_score: 95
                 'no game':
                   value: []
         '400':
@@ -203,9 +205,9 @@ paths:
             examples:
               'A request of creating a game':
                 value:
+                  date: '2024-05-09'
                   away_name: 'Pacers'
                   home_name: 'Bucks'
-                  date: '2024-05-09'
                   away_score: 3
                   home_score: 0
       responses:
@@ -224,9 +226,9 @@ paths:
                     away_abbr: 'IND'
                     home_id: 60020
                     home_abbr: 'MIL'
+                    date: '2024-05-09'
                     away_name: 'Pacers'
                     home_name: 'Bucks'
-                    date: '2024-05-09'
                     away_score: 3
                     home_score: 0
         '400':
@@ -262,8 +264,43 @@ paths:
               'A request of updating a game':
                 value:
                   is_home_winner: false
-                  away_score: 30
-                  home_score: 20
+      responses:
+        '204':
+          description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /games/{id}/teams/{team_id}:
+    patch:
+      tags:
+        - 比賽
+      summary: 更新比賽隊伍資料
+      description: Update a game's team
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/team_id'
+      requestBody:
+        description: |
+          The request body for updating a game's team.
+
+          Only the presented fields will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameTeamPatch'
+            examples:
+              "A request of updating a game's team":
+                value:
+                  score: 3
       responses:
         '204':
           description: Updated
@@ -784,6 +821,16 @@ components:
         format: uint32
         example: 3001
 
+    team_id:
+      description: The ID of the team
+      name: team_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 3001
+
     page_offset:
       description: The offset of paginated data
       name: page_offset
@@ -876,6 +923,14 @@ components:
             home_name:
               description: The name of the home team
               type: string
+            away_score:
+              description: The score of the away team
+              type: integer
+              format: uint32
+            home_score:
+              description: The score of the home team
+              type: integer
+              format: uint32
         - $ref: '#/components/schemas/GamePatch'
 
     GamePatch:
@@ -885,12 +940,13 @@ components:
         is_home_winner:
           description: Is the home team the winner
           type: boolean
-        away_score:
-          description: The score of the away team
-          type: integer
-          format: uint32
-        home_score:
-          description: The score of the home team
+
+    GameTeamPatch:
+      description: A patch for the game's team
+      type: object
+      properties:
+        score:
+          description: The score of the team
           type: integer
           format: uint32
 
