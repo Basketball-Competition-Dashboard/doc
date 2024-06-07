@@ -261,7 +261,6 @@ paths:
             examples:
               'A request of updating a game':
                 value:
-                  date: '2024-05-09'
                   is_home_winner: false
                   away_score: 30
                   home_score: 20
@@ -766,7 +765,7 @@ paths:
 components:
   parameters:
     id:
-      description: Resource ID
+      description: The ID of the resource
       name: id
       in: path
       required: true
@@ -774,9 +773,9 @@ components:
         type: integer
         format: uint32
         example: 0
-    
+
     game_id:
-      description: Game ID
+      description: The ID of the game
       name: game_id
       in: path
       required: true
@@ -784,7 +783,7 @@ components:
         type: integer
         format: uint32
         example: 3001
-    
+
     page_offset:
       description: The offset of paginated data
       name: page_offset
@@ -794,7 +793,7 @@ components:
         type: integer
         format: uint32
         example: 0
-    
+
     page_length:
       description: The length of paginated data
       name: page_length
@@ -804,7 +803,7 @@ components:
         type: integer
         format: uint32
         example: 3
-    
+
     sort_field:
       description: Field to sort by
       name: sort_field
@@ -813,7 +812,7 @@ components:
       schema:
         type: string
         example: 'name'
-    
+
     sort_order:
       description: Sort order
       name: sort_order
@@ -863,10 +862,14 @@ components:
       allOf:
         - type: object
           required:
+            - date
             - away_name
             - home_name
-            - date
           properties:
+            date:
+              description: The date of the game
+              type: string
+              format: date
             away_name:
               description: The name of the away team
               type: string
@@ -879,10 +882,6 @@ components:
       description: A patch for the game
       type: object
       properties:
-        date:
-          description: The date of the game
-          type: string
-          format: date
         is_home_winner:
           description: Is the home team the winner
           type: boolean
