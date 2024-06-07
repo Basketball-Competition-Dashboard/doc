@@ -61,7 +61,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Auth'
+              type: object
+              required:
+                - name
+                - credential
+              properties:
+                name:
+                  description: The name of the account
+                  type: string
+                  example: 'Manager Zoe'
+                credential:
+                  description: The credential of the account
+                  type: string
+                  format: password
+                  example: 'A super safe password!'
             examples:
               'Demo Jack':
                 value:
@@ -76,6 +89,7 @@ paths:
           description: Logged in
           headers:
             Set-Cookie:
+              description: To set the session ID for authorization
               schema:
                 type: string
                 example: >-
@@ -101,6 +115,7 @@ paths:
           description: Logged out
           headers:
             Set-Cookie:
+              description: To unset the session ID for authorization
               schema:
                 type: string
                 example: 'session_id=; HttpOnly; Max-Age=0; Path=/; SameSite=Strict'
@@ -113,8 +128,8 @@ paths:
     get:
       tags:
         - 比賽
-      summary: 取得比賽資料
-      description: Get games
+      summary: 讀取比賽資料
+      description: Read games
       parameters:
         - $ref: '#/components/parameters/page_offset'
         - $ref: '#/components/parameters/page_length'
@@ -223,7 +238,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /game/{id}:
+  /games/{id}:
     patch:
       tags:
         - 比賽
@@ -263,8 +278,8 @@ paths:
     get:
       tags:
         - 球隊
-      summary: 取得球隊資料
-      description: Get teams
+      summary: 讀取球隊資料
+      description: Read teams
       parameters:
         - $ref: '#/components/parameters/page_offset'
         - $ref: '#/components/parameters/page_length'
@@ -357,7 +372,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /team/{id}:
+  /teams/{id}:
     patch:
       tags:
         - 球隊
@@ -390,29 +405,29 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /player-profiles:
-    post:
+  /players/profile:
+    get:
       tags:
         - 球員
-      summary: 取得球員介紹資料
-      description: Get player profile data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      summary: 讀取球員介紹資料
+      description: Read players' profile
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Player profile data set with ID
+                description: Players' profile
                 type: array
                 items:
-                  description: Player profile data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerProfile'
+                  $ref: '#/components/schemas/PlayerProfile'
               examples:
-                'two player profiles':
+                "three players' profile":
                   value:
                     - id: 3695
                       name: 'Precious Achiuwa'
@@ -430,83 +445,63 @@ paths:
                       height: '6-8'
                       weight: 265
                       country: 'New Zealand'
-                'no player profile':
+                    - id: 3697
+                      name: 'Bam Adebayo'
+                      team_name: 'Heat'
+                      position: 'C'
+                      birthdate: '1970-05-25'
+                      height: '6-8'
+                      weight: 255
+                      country: 'USA'
+                'no player':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /player/profile:
+    post:
       tags:
         - 球員
-      summary: 新增或更新球員介紹資料
-      description: Create or update player profile data set
+      summary: 新增球員介紹資料
+      description: Create a player's profile
       security:
         - SessionID: []
       requestBody:
-        description: The request body for player profile data modifications
+        description: The request body for creating a player's profile
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Player profile data set.
-
-                If the `id` field presents, the server will update the player profile data with the same ID.
-                Otherwise, the server will create a new player profile data.
-              type: array
-              items:
-                description: Player profile data to create or update
-                oneOf:
-                  - $ref: '#/components/schemas/PlayerProfile'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerProfile'
+              $ref: '#/components/schemas/PlayerProfileNew'
             examples:
-              'Create a player profile':
+              "A request of creating a player's profile":
                 value:
-                  - name: 'Precious Achiuwa'
+                  name: 'Precious Achiuwa'
+                  team_name: 'Knicks'
+                  birthdate: '1970-05-25'
+                  height: '6-8'
+                  weight: 243
+                  country: 'Nigeria'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                description: The new player's profile
+                $ref: '#/components/schemas/PlayerProfile'
+              examples:
+                "A response of creating a player's profile":
+                  value:
+                    id: 3695
+                    name: 'Precious Achiuwa'
                     team_name: 'Knicks'
-                    position: 'F'
                     birthdate: '1970-05-25'
                     height: '6-8'
                     weight: 243
                     country: 'Nigeria'
-              'Update a player profile':
-                value:
-                  - id: 3695
-                    name: 'Precious Achiuwa'
-                    team_name: 'Knicks'
-                    position: 'F'
-                    birthdate: '1970-05-25'
-                    height: '6-8'
-                    weight: 244
-                    country: 'Nigeria'
-      responses:
-        '201':
-          description: Created
-        '204':
-          description: Updated
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /player-profiles/{id}:
-    delete:
-      tags:
-        - 球員
-      summary: 刪除球員介紹資料
-      description: Delete player profile data
-      security:
-        - SessionID: []
-      parameters:
-        - $ref: '#/components/parameters/id'
-      responses:
-        '204':
-          description: Deleted
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -516,147 +511,194 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /player-stats:
-    post:
+  /players/{id}/profile:
+    patch:
       tags:
         - 球員
-      summary: 取得球員表現資料
-      description: Get player statistics data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                description: Player statistics data set with ID
-                type: array
-                items:
-                  description: Player statistics data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - type: object
-                      properties:
-                        game:
-                          $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerStatHeader'
-                    - $ref: '#/components/schemas/PlayerStatMain'
-              examples:
-                'two player stats':
-                  value:
-                    - id: 3695
-                      name: 'Precious Achiuwa'
-                      game:
-                        id: 240506
-                        date: '2024-05-06'
-                        home_name: 'Celtics'
-                        away_name: 'Nets'
-                      assist: 20
-                      hit: 5
-                      steal: 6
-                      rebound: 25
-                      free_throw: 2
-                      score: 23
-                    - id: 3696
-                      name: 'Steven Adams'
-                      game_name: '240502 HOU MEM'
-                      assist: 20
-                      hit: 6
-                      steal: 6
-                      rebound: 25
-                      free_throw: 5
-                      score: 23
-                'no player stat':
-                  value: []
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    put:
-      tags:
-        - 球員
-      summary: 新增或更新球員表現資料
-      description: Create or update player statistics data set
+      summary: 更新球員介紹資料
+      description: Update a player's profile
       security:
         - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
       requestBody:
-        description: The request body for player statistics data modifications
+        description: The request body for updating a player's profile
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Player statistics data set.
-
-                If the `id` field presents, the server will update the player statistics data with the same ID.
-                Otherwise, the server will create a new player statistics data.
-              type: array
-              items:
-                description: Player statistics data to create or update
-                oneOf:
-                  - allOf:
-                    - $ref: '#/components/schemas/PlayerStatHeader'
-                    - $ref: '#/components/schemas/PlayerStatMain'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - type: object
-                      properties:
-                        game:
-                          $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerStatMain'
+              $ref: '#/components/schemas/PlayerProfilePatch'
             examples:
-              'Create a player statistics':
+              "A request of updating a player's profile":
                 value:
-                  - name: 'Precious Achiuwa'
-                    game_name: '240506 HOU MEM'
-                    assist: 20
-                    hit: 5
-                    steal: 6
-                    rebound: 25
-                    free_throw: 2
-                    score: 23
-              'Update two player statistics':
-                value:
-                  - id: 3695
-                    assist: 20
-                    hit: 5
-                    steal: 6
-                    rebound: 25
-                    free_throw: 3
-                    score: 24
-                  - id: 3696
-                    assist: 20
-                    hit: 6
-                    steal: 6
-                    rebound: 25
-                    free_throw: 5
-                    score: 23
+                  position: 'F'
+                  weight: 244
       responses:
-        '201':
-          description: Created
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /player-stats/{id}:
-    delete:
+  /players/stat:
+    get:
       tags:
         - 球員
-      summary: 刪除球員表現資料
-      description: Delete player statistics data
+      summary: 讀取球員表現資料
+      description: Read players' statistics
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: Players' statistics
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlayerStat'
+              examples:
+                "three players' stat":
+                  value:
+                    - id: 3695
+                      name: 'Precious Achiuwa'
+                      game_id: 3001
+                      game_date: '2024-05-06'
+                      game_away_abbr: 'HOU'
+                      game_home_abbr: 'MEM'
+                      assist: 20
+                      hit: 5
+                      steal: 6
+                      rebound: 25
+                      free_throw: 3
+                      score: 24
+                    - id: 3696
+                      name: 'Steven Adams'
+                      game_id: 3001
+                      game_date: '2024-05-06'
+                      game_away_abbr: 'HOU'
+                      game_home_abbr: 'MEM'
+                      assist: 10
+                      hit: 2
+                      steal: 3
+                      rebound: 15
+                      free_throw: 1
+                      score: 12
+                    - id: 3697
+                      name: 'Bam Adebayo'
+                      game_id: 3001
+                      game_date: '2024-05-06'
+                      game_away_abbr: 'HOU'
+                      game_home_abbr: 'MEM'
+                      assist: 15
+                      hit: 3
+                      steal: 4
+                      rebound: 20
+                      free_throw: 2
+                      score: 18
+                'no player':
+                  value: []
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /player/stat:
+    post:
+      tags:
+        - 球員
+      summary: 新增球員表現資料
+      description: Create a player's stat
+      security:
+        - SessionID: []
+      requestBody:
+        description: The request body for creating a player's stat
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerStatNew'
+            examples:
+              "A request of creating a player's stat":
+                value:
+                  name: 'Precious Achiuwa'
+                  game_date: '2024-05-06'
+                  game_away_abbr: 'HOU'
+                  game_home_abbr: 'MEM'
+                  assist: 20
+                  hit: 5
+                  steal: 6
+                  rebound: 25
+                  free_throw: 3
+                  score: 24
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                description: The new player's stat
+                $ref: '#/components/schemas/PlayerStat'
+              examples:
+                "A response of creating a player's stat":
+                  value:
+                    id: 3695
+                    game_id: 3001
+                    name: 'Precious Achiuwa'
+                    game_date: '2024-05-06'
+                    game_away_abbr: 'HOU'
+                    game_home_abbr: 'MEM'
+                    assist: 20
+                    hit: 5
+                    steal: 6
+                    rebound: 25
+                    free_throw: 3
+                    score: 24
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /players/{id}/stats/{game_id}:
+    patch:
+      tags:
+        - 球員
+      summary: 更新球員表現資料
+      description: Update a player's stat for a game
       security:
         - SessionID: []
       parameters:
         - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/game_id'
+      requestBody:
+        description: The request body for updating a player's stat for a game
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerStatPatch'
+            examples:
+              "A request of updating a player's stat for a game":
+                value:
+                  hit: 1
+                  free_throw: 4
+                  score: 30
       responses:
         '204':
-          description: Deleted
+          description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -677,6 +719,17 @@ components:
         type: integer
         format: uint32
         example: 0
+    
+    game_id:
+      description: Game ID
+      name: game_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 3001
+    
     page_offset:
       description: The offset of paginated data
       name: page_offset
@@ -686,6 +739,7 @@ components:
         type: integer
         format: uint32
         example: 0
+    
     page_length:
       description: The length of paginated data
       name: page_length
@@ -695,6 +749,7 @@ components:
         type: integer
         format: uint32
         example: 3
+    
     sort_field:
       description: Field to sort by
       name: sort_field
@@ -703,6 +758,7 @@ components:
       schema:
         type: string
         example: 'name'
+    
     sort_order:
       description: Sort order
       name: sort_order
@@ -716,33 +772,6 @@ components:
         example: 'descending'
 
   schemas:
-    Auth:
-      description: Authentication data
-      type: object
-      required:
-        - name
-        - credential
-      properties:
-        name:
-          type: string
-          example: 'Manager Zoe'
-        credential:
-          type: string
-          format: password
-          example: 'A super safe password!'
-
-    WithID:
-      description: Resource with ID
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          description: Resource ID
-          type: integer
-          format: uint32
-          example: 0
-
     Game:
       description: A game
       allOf:
@@ -863,125 +892,136 @@ components:
           example: 'Joseph Mazzulla'
 
     PlayerProfile:
-      description: Player profile data
+      description: A player profile
+      allOf:
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              description: The ID of the player
+              type: integer
+              format: uint32
+        - $ref: '#/components/schemas/PlayerProfileNew'
+
+    PlayerProfileNew:
+      description: A new player profile
+      allOf:
+        - type: object
+          required:
+            - name
+        - $ref: '#/components/schemas/PlayerProfilePatch'
+
+    PlayerProfilePatch:
+      description: A patch for the player profile
       type: object
-      required:
-        - name
       properties:
         name:
-          description: Player name
+          description: The name of the player
           type: string
           example: 'Precious Achiuwa'
         team_name:
-          description: Team name
+          description: The name of the team
           type: string
           example: 'Knicks'
         position:
-          description: Player position
+          description: The position of the player
           type: string
           example: 'F'
         birthdate:
-          description: Player birthdate
+          description: The birthdate of the player
           type: string
           format: date
           example: '1970-05-25'
         height:
-          description: Player height
+          description: The height of the player
           type: string
           example: '6-8'
         weight:
-          description: Player weight
+          description: The weight of the player
           type: integer
           format: uint32
           example: 243
         country:
-          description: Player country
+          description: The country of the player
           type: string
           example: 'Nigeria'
-    
-    PlayerStatHeader:
-      description: Player statistics header data
-      type: object
-      required:
-        - name
-        - game
-      properties:
-        name:
-          description: Player name
-          type: string
-          example: 'Precious Achiuwa'
 
-    PlayerStatMain:
-      description: Player statistics main data
+    PlayerStat:
+      description: A player statistics
+      allOf:
+        - type: object
+          required:
+            - id
+            - game_id
+          properties:
+            id:
+              description: The ID of the player
+              type: integer
+              format: uint32
+            game_id:
+              description: The ID of the game
+              type: integer
+              format: uint32
+        - $ref: '#/components/schemas/PlayerStatNew'
+
+    PlayerStatNew:
+      description: A new player statistics
+      allOf:
+        - type: object
+          required:
+            - name
+            - game_date
+            - game_away_abbr
+            - game_home_abbr
+          properties:
+            name:
+              description: The name of the player
+              type: string
+              example: 'Precious Achiuwa'
+            game_date:
+              description: The date of the game
+              type: string
+              format: date
+              example: '2024-05-06'
+            game_away_abbr:
+              description: The abbreviation of the away team
+              type: string
+              example: 'HOU'
+            game_home_abbr:
+              description: The abbreviation of the home team
+              type: string
+              example: 'MEM'
+        - $ref: '#/components/schemas/PlayerStatPatch'
+
+    PlayerStatPatch:
+      description: A patch for the player statistics
       type: object
       properties:
         assist:
           description: Player assist count
           type: integer
           format: uint32
-          example: 20
         hit:
           description: Player hit count
           type: integer
           format: uint32
-          example: 5
         steal:
           description: Player steal count
           type: integer
           format: uint32
-          example: 6
         rebound:
           description: Player rebound count
           type: integer
           format: uint32
-          example: 25
         free_throw:
           description: Player free throw count
           type: integer
           format: uint32
-          example: 3
         score:
           description: Player score count
           type: integer
           format: uint32
-          example: 24
-
-    PageOptions:
-      description: Page options
-      type: object
-      required:
-        - offset
-        - length
-      properties:
-        offset:
-          description: The offset of paginated data
-          type: integer
-          format: uint32
-          example: 0
-        length:
-          description: The length of paginated data
-          type: integer
-          format: uint32
-          example: 10
-
-    SortOptions:
-      description: Sort options
-      type: object
-      required:
-        - field
-        - order
-      properties:
-        field:
-          description: Field to sort by
-          type: string
-          example: 'name'
-        order:
-          description: Sort order
-          type: string
-          enum:
-            - 'ascending'
-            - 'descending'
-          example: 'descending'
 
     Error:
       description: Reason for error
@@ -992,40 +1032,6 @@ components:
         message:
           type: string
           example: 'An unexpected error has occurred.'
-
-  requestBodies:
-    Pagination:
-      description: The request body for paginated data
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - page
-              - sort
-            properties:
-              page:
-                $ref: '#/components/schemas/PageOptions'
-              sort:
-                $ref: '#/components/schemas/SortOptions'
-          examples:
-            'ten records sorted by name in ascending order':
-              value:
-                page:
-                  offset: 0
-                  length: 10
-                sort:
-                  field: 'name'
-                  order: 'ascending'
-            'five records sorted by date in descending order':
-              value:
-                page:
-                  offset: 5
-                  length: 5
-                sort:
-                  field: 'date'
-                  order: 'descending'
 
   responses:
     BadRequestError:
