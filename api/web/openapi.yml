@@ -249,7 +249,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/id'
       requestBody:
-        description: The request body for updating a game
+        description: |
+          The request body for updating a game.
+
+          Only the presented fields will be updated.
         required: true
         content:
           application/json:
@@ -383,7 +386,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/id'
       requestBody:
-        description: The request body for updating a team
+        description: |
+          The request body for updating a team.
+
+          Only the presented fields will be updated.
         required: true
         content:
           application/json:
@@ -522,7 +528,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/id'
       requestBody:
-        description: The request body for updating a player's profile
+        description: |
+          The request body for updating a player's profile.
+
+          Only the presented fields will be updated.
         required: true
         content:
           application/json:
@@ -705,7 +714,10 @@ paths:
         - $ref: '#/components/parameters/id'
         - $ref: '#/components/parameters/game_id'
       requestBody:
-        description: The request body for updating a player's stat for a game
+        description: |
+          The request body for updating a player's stat for a game
+
+          Only the presented fields will be updated.
         required: true
         content:
           application/json:
