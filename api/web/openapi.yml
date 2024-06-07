@@ -544,6 +544,27 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    
+    delete:
+      tags:
+        - 球員
+      summary: 刪除球員介紹資料
+      description: Delete a player's profile
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /players/stat:
     get:
@@ -699,6 +720,28 @@ paths:
       responses:
         '204':
           description: Updated
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    delete:
+      tags:
+        - 球員
+      summary: 刪除球員表現資料
+      description: Delete a player's stat for a game
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/game_id'
+      responses:
+        '204':
+          description: Deleted
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
