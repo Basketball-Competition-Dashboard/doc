@@ -240,42 +240,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /games/{id}:
-    patch:
-      tags:
-        - 比賽
-      summary: 更新比賽資料
-      description: Update a game
-      security:
-        - SessionID: []
-      parameters:
-        - $ref: '#/components/parameters/id'
-      requestBody:
-        description: |
-          The request body for updating a game.
-
-          Only the presented fields will be updated.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GamePatch'
-            examples:
-              'A request of updating a game':
-                value:
-                  is_home_winner: false
-      responses:
-        '204':
-          description: Updated
-        '400':
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
   /games/{id}/teams/{team_id}:
     patch:
       tags:
@@ -300,7 +264,8 @@ paths:
             examples:
               "A request of updating a game's team":
                 value:
-                  score: 3
+                  score: 130
+                  is_winner: true
       responses:
         '204':
           description: Updated
@@ -931,15 +896,9 @@ components:
               description: The score of the home team
               type: integer
               format: uint32
-        - $ref: '#/components/schemas/GamePatch'
-
-    GamePatch:
-      description: A patch for the game
-      type: object
-      properties:
-        is_home_winner:
-          description: Is the home team the winner
-          type: boolean
+            is_home_winner:
+              description: Indicating the winner of the game
+              type: boolean
 
     GameTeamPatch:
       description: A patch for the game's team
@@ -949,6 +908,14 @@ components:
           description: The score of the team
           type: integer
           format: uint32
+        is_winner:
+          description: |
+            Indicating the winner of the game.
+
+            The field is mutually exclusive:
+            if one team is set as the winner,
+            all other teams  in the game will be unset as winners.
+          type: boolean
 
     Team:
       description: A team
