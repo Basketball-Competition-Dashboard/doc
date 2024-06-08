@@ -2,7 +2,7 @@ openapi: 3.0.0
 
 info:
   title: 籃球情報室 Web API 文件
-  version: 0.0.0
+  version: 0.1.0
   description: Basketball Competition Dashboard Web API
 
 externalDocs:
@@ -61,7 +61,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Auth'
+              type: object
+              required:
+                - name
+                - credential
+              properties:
+                name:
+                  description: The name of the account
+                  type: string
+                  example: 'Manager Zoe'
+                credential:
+                  description: The credential of the account
+                  type: string
+                  format: password
+                  example: 'A super safe password!'
             examples:
               'Demo Jack':
                 value:
@@ -76,11 +89,14 @@ paths:
           description: Logged in
           headers:
             Set-Cookie:
+              description: To set the session ID for authorization
               schema:
                 type: string
                 example: >-
                   session_id=MTRlNGIzYzI0MTk3NGIzYjg3ODI2MjlhNWY1ZWRhNmE=;
                   HttpOnly; Max-Age=31536000; Path=/; SameSite=Strict
+        '400':
+          $ref: '#/components/responses/BadRequestError'
         '404':
           $ref: '#/components/responses/NotFoundError'
         '500':
@@ -99,6 +115,7 @@ paths:
           description: Logged out
           headers:
             Set-Cookie:
+              description: To unset the session ID for authorization
               schema:
                 type: string
                 example: 'session_id=; HttpOnly; Max-Age=0; Path=/; SameSite=Strict'
@@ -108,280 +125,316 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   /games:
-    post:
+    get:
       tags:
         - 比賽
-      summary: 取得比賽資料
-      description: Get game data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      summary: 讀取比賽資料
+      description: Read games
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Game data set with ID
+                description: Games
                 type: array
                 items:
-                  description: Game data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
+                  $ref: '#/components/schemas/Game'
               examples:
-                'five games':
+                'three games':
                   value:
                     - id: 3001
+                      away_id: 60019
+                      away_abbr: 'BOS'
+                      home_id: 60020
+                      home_abbr: 'MIL'
                       date: '2024-05-06'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'BKN'
-                      away_name: 'Nets'
-                      home_score: 123
-                      away_score: 98
-                      is_winner_home: true
+                      away_name: 'Celtics'
+                      home_name: 'Bucks'
+                      away_score: 100
+                      home_score: 105
+                      is_home_winner: true
                     - id: 3002
-                      date: '2024-05-02'
-                      home_abbr: 'MIL'
-                      home_name: 'Bucks'
-                      away_abbr: 'IND'
-                      away_name: 'Pacers'
-                      home_score: 89
-                      away_score: 85
-                      is_winner_home: true
+                      away_id: 60020
+                      away_abbr: 'MIL'
+                      home_id: 60021
+                      home_abbr: 'IND'
+                      date: '2024-05-07'
+                      away_name: 'Bucks'
+                      home_name: 'Pacers'
+                      away_score: 110
+                      home_score: 105
+                      is_home_winner: false
                     - id: 3003
-                      date: '2024-04-23'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
-                      away_abbr: 'ORL'
-                      away_name: 'Magic'
-                      home_score: 69
-                      away_score: 87
-                      is_winner_home: false
-                    - id: 3004
-                      date: '2024-04-20'
-                      home_abbr: 'MIL'
-                      home_name: 'Bucks'
-                      away_abbr: 'BKN'
-                      away_name: 'Nets'
-                      home_score: 123
-                      away_score: 98
-                      is_winner_home: true
-                    - id: 3005
-                      date: '2024-04-18'
-                      home_abbr: 'BOS'
-                      home_name: 'Celtics'
+                      away_id: 60021
                       away_abbr: 'IND'
+                      home_id: 60019
+                      home_abbr: 'BOS'
+                      date: '2024-05-08'
                       away_name: 'Pacers'
-                      home_score: 89
-                      away_score: 85
-                      is_winner_home: true
+                      home_name: 'Celtics'
+                      away_score: 105
+                      home_score: 95
                 'no game':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /game:
+    post:
       tags:
         - 比賽
-      summary: 新增或更新比賽資料
-      description: Create or update game data set
+      summary: 新增比賽資料
+      description: Create a game
       security:
         - SessionID: []
       requestBody:
-        description: The request body for game data modifications
+        description: The request body for creating a game
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Game data set.
-
-                If the `id` field presents, the server will update the game data with the same ID.
-                Otherwise, the server will create a new game data.
-              type: array
-              items:
-                description: Game data to create or update
-                oneOf:
-                  - allOf:
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/GameHeader'
-                    - $ref: '#/components/schemas/GameMain'
+              $ref: '#/components/schemas/GameNew'
             examples:
-              'Create a game':
+              'A request of creating a game':
                 value:
-                  - date: '2024-05-06'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'BKN'
-                    away_name: 'Nets'
-                    home_score: 0
-                    away_score: 0
-              'Update three games':
-                value:
-                  - id: 3001
-                    date: '2024-05-06'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'BKN'
-                    away_name: 'Nets'
-                    home_score: 123
-                    away_score: 98
-                    is_winner_home: true
-                  - id: 3003
-                    date: '2024-05-02'
-                    home_abbr: 'MIL'
-                    home_name: 'Bucks'
-                    away_abbr: 'IND'
-                    away_name: 'Pacers'
-                    home_score: 89
-                    away_score: 85
-                    is_winner_home: true
-                  - id: 3002
-                    date: '2024-04-23'
-                    home_abbr: 'BOS'
-                    home_name: 'Celtics'
-                    away_abbr: 'ORL'
-                    away_name: 'Magic'
-                    home_score: 69
-                    away_score: 87
-                    is_winner_home: false
+                  date: '2024-05-09'
+                  away_name: 'Pacers'
+                  home_name: 'Bucks'
+                  away_score: 3
+                  home_score: 0
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                description: The new game
+                $ref: '#/components/schemas/Game'
+              examples:
+                'A response of creating a game':
+                  value:
+                    id: 3004
+                    away_id: 60021
+                    away_abbr: 'IND'
+                    home_id: 60020
+                    home_abbr: 'MIL'
+                    date: '2024-05-09'
+                    away_name: 'Pacers'
+                    home_name: 'Bucks'
+                    away_score: 3
+                    home_score: 0
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /games/{id}/teams/{team_id}:
+    patch:
+      tags:
+        - 比賽
+      summary: 更新比賽隊伍資料
+      description: Update a game's team
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/team_id'
+      requestBody:
+        description: |
+          The request body for updating a game's team.
+
+          Only the presented fields will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameTeamPatch'
+            examples:
+              "A request of updating a game's team":
+                value:
+                  score: 130
+                  is_winner: true
+      responses:
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
   /teams:
-    post:
+    get:
       tags:
         - 球隊
-      summary: 取得球隊資料
-      description: Get team data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      summary: 讀取球隊資料
+      description: Read teams
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Team data set with ID
+                description: Teams
                 type: array
                 items:
-                  description: Team data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/Team'
+                  $ref: '#/components/schemas/Team'
               examples:
-                'one team':
+                'three teams':
                   value:
-                    - id: 60020
+                    - id: 60019
                       abbr: 'BOS'
                       name: 'Celtics'
                       city: 'Boston'
-                      coach: 'Joseph Mazzulla'
                       year_founded: 1946
+                      coach: 'Joseph Mazzulla'
+                    - id: 60020
+                      abbr: 'MIL'
+                      name: 'Bucks'
+                      city: 'Milwaukee'
+                      year_founded: 1968
+                      coach: 'Vin Baker'
+                    - id: 60021
+                      abbr: 'IND'
+                      name: 'Pacers'
+                      city: 'Indiana'
+                      year_founded: 1967
+                      coach: 'Dane Fife'
                 'no team':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /team:
+    post:
       tags:
         - 球隊
-      summary: 新增或更新球隊資料
-      description: Create or update team data set
+      summary: 新增球隊資料
+      description: Create a team
       security:
         - SessionID: []
       requestBody:
-        description: The request body for team data modifications
+        description: The request body for creating a team
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Team data set.
-
-                If the `id` field presents, the server will update the team data with the same ID.
-                Otherwise, the server will create a new team data.
-              type: array
-              items:
-                description: Team data to create or update
-                oneOf:
-                  - $ref: '#/components/schemas/Team'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/Team'
+              $ref: '#/components/schemas/TeamNew'
             examples:
-              'Create a team':
+              'A request of creating a team':
                 value:
-                  - abbr: 'BOS'
-                    name: 'Celtics'
-                    city: 'Boston'
-                    coach: 'John Russell'
-                    year_founded: 1946
-              'Update two teams':
-                value:
-                  - id: 60020
-                    abbr: 'BOS'
-                    name: 'Celtics'
-                    city: 'Boston'
-                    coach: 'Joe Mazzulla'
-                    year_founded: 1946
-                  - id: 60021
-                    abbr: 'MIL'
-                    name: 'Bucks'
-                    city: 'Milwaukee'
-                    coach: 'Glenn Anton Rivers'
-                    year_founded: 1968
+                  abbr: 'BOS'
+                  name: 'Celtics'
+                  city: 'Boston'
+                  year_founded: 1946
+                  coach: 'John Russell'
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                description: The new team
+                $ref: '#/components/schemas/Team'
+              examples:
+                'A response of creating a team':
+                  value:
+                    id: 60022
+                    abbr: 'BOS'
+                    name: 'Celtics'
+                    city: 'Boston'
+                    year_founded: 1946
+                    coach: 'John Russell'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /teams/{id}:
+    patch:
+      tags:
+        - 球隊
+      summary: 更新球隊資料
+      description: Update a team
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: |
+          The request body for updating a team.
+
+          Only the presented fields will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamPatch'
+            examples:
+              'A request of updating a team':
+                value:
+                  coach: 'Joseph Mazzulla'
+      responses:
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /player-profiles:
-    post:
+  /players/profile:
+    get:
       tags:
         - 球員
-      summary: 取得球員介紹資料
-      description: Get player profile data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      summary: 讀取球員介紹資料
+      description: Read players' profile
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Player profile data set with ID
+                description: Players' profile
                 type: array
                 items:
-                  description: Player profile data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerProfile'
+                  $ref: '#/components/schemas/PlayerProfile'
               examples:
-                'two player profiles':
+                "three players' profile":
                   value:
                     - id: 3695
                       name: 'Precious Achiuwa'
@@ -399,76 +452,114 @@ paths:
                       height: '6-8'
                       weight: 265
                       country: 'New Zealand'
-                'no player profile':
+                    - id: 3697
+                      name: 'Bam Adebayo'
+                      team_name: 'Heat'
+                      position: 'C'
+                      birthdate: '1970-05-25'
+                      height: '6-8'
+                      weight: 255
+                      country: 'USA'
+                'no player':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /player/profile:
+    post:
       tags:
         - 球員
-      summary: 新增或更新球員介紹資料
-      description: Create or update player profile data set
+      summary: 新增球員介紹資料
+      description: Create a player's profile
       security:
         - SessionID: []
       requestBody:
-        description: The request body for player profile data modifications
+        description: The request body for creating a player's profile
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Player profile data set.
-
-                If the `id` field presents, the server will update the player profile data with the same ID.
-                Otherwise, the server will create a new player profile data.
-              type: array
-              items:
-                description: Player profile data to create or update
-                oneOf:
-                  - $ref: '#/components/schemas/PlayerProfile'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerProfile'
+              $ref: '#/components/schemas/PlayerProfileNew'
             examples:
-              'Create a player profile':
+              "A request of creating a player's profile":
                 value:
-                  - name: 'Precious Achiuwa'
+                  name: 'Precious Achiuwa'
+                  team_name: 'Knicks'
+                  birthdate: '1970-05-25'
+                  height: '6-8'
+                  weight: 243
+                  country: 'Nigeria'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                description: The new player's profile
+                $ref: '#/components/schemas/PlayerProfile'
+              examples:
+                "A response of creating a player's profile":
+                  value:
+                    id: 3695
+                    name: 'Precious Achiuwa'
                     team_name: 'Knicks'
-                    position: 'F'
                     birthdate: '1970-05-25'
                     height: '6-8'
                     weight: 243
                     country: 'Nigeria'
-              'Update a player profile':
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /players/{id}/profile:
+    patch:
+      tags:
+        - 球員
+      summary: 更新球員介紹資料
+      description: Update a player's profile
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: |
+          The request body for updating a player's profile.
+
+          Only the presented fields will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerProfilePatch'
+            examples:
+              "A request of updating a player's profile":
                 value:
-                  - id: 3695
-                    name: 'Precious Achiuwa'
-                    team_name: 'Knicks'
-                    position: 'F'
-                    birthdate: '1970-05-25'
-                    height: '6-8'
-                    weight: 244
-                    country: 'Nigeria'
+                  position: 'F'
+                  weight: 244
       responses:
-        '201':
-          description: Created
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
-  /player-profiles/{id}:
+    
     delete:
       tags:
         - 球員
       summary: 刪除球員介紹資料
-      description: Delete player profile data
+      description: Delete a player's profile
       security:
         - SessionID: []
       parameters:
@@ -485,144 +576,182 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /player-stats:
-    post:
+  /players/stat:
+    get:
       tags:
         - 球員
-      summary: 取得球員表現資料
-      description: Get player statistics data set
-      requestBody:
-        $ref: '#/components/requestBodies/Pagination'
+      summary: 讀取球員表現資料
+      description: Read players' statistics
+      parameters:
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/page_length'
+        - $ref: '#/components/parameters/sort_field'
+        - $ref: '#/components/parameters/sort_order'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                description: Player statistics data set with ID
+                description: Players' statistics
                 type: array
                 items:
-                  description: Player statistics data with ID
-                  allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - type: object
-                      properties:
-                        game:
-                          $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerStatHeader'
-                    - $ref: '#/components/schemas/PlayerStatMain'
+                  $ref: '#/components/schemas/PlayerStat'
               examples:
-                'two player stats':
+                "three players' stat":
                   value:
                     - id: 3695
                       name: 'Precious Achiuwa'
-                      game:
-                        id: 240506
-                        date: '2024-05-06'
-                        home_name: 'Celtics'
-                        away_name: 'Nets'
+                      game_id: 3001
+                      game_date: '2024-05-06'
+                      game_away_abbr: 'HOU'
+                      game_home_abbr: 'MEM'
                       assist: 20
                       hit: 5
                       steal: 6
                       rebound: 25
-                      free_throw: 2
-                      score: 23
+                      free_throw: 3
+                      score: 24
                     - id: 3696
                       name: 'Steven Adams'
-                      game_name: '240502 HOU MEM'
-                      assist: 20
-                      hit: 6
-                      steal: 6
-                      rebound: 25
-                      free_throw: 5
-                      score: 23
-                'no player stat':
+                      game_id: 3001
+                      game_date: '2024-05-06'
+                      game_away_abbr: 'HOU'
+                      game_home_abbr: 'MEM'
+                      assist: 10
+                      hit: 2
+                      steal: 3
+                      rebound: 15
+                      free_throw: 1
+                      score: 12
+                    - id: 3697
+                      name: 'Bam Adebayo'
+                      game_id: 3001
+                      game_date: '2024-05-06'
+                      game_away_abbr: 'HOU'
+                      game_home_abbr: 'MEM'
+                      assist: 15
+                      hit: 3
+                      steal: 4
+                      rebound: 20
+                      free_throw: 2
+                      score: 18
+                'no player':
                   value: []
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    put:
+
+  /player/stat:
+    post:
       tags:
         - 球員
-      summary: 新增或更新球員表現資料
-      description: Create or update player statistics data set
+      summary: 新增球員表現資料
+      description: Create a player's stat
       security:
         - SessionID: []
       requestBody:
-        description: The request body for player statistics data modifications
+        description: The request body for creating a player's stat
         required: true
         content:
           application/json:
             schema:
-              description: |
-                Player statistics data set.
-
-                If the `id` field presents, the server will update the player statistics data with the same ID.
-                Otherwise, the server will create a new player statistics data.
-              type: array
-              items:
-                description: Player statistics data to create or update
-                oneOf:
-                  - allOf:
-                    - $ref: '#/components/schemas/PlayerStatHeader'
-                    - $ref: '#/components/schemas/PlayerStatMain'
-                  - allOf:
-                    - $ref: '#/components/schemas/WithID'
-                    - type: object
-                      properties:
-                        game:
-                          $ref: '#/components/schemas/WithID'
-                    - $ref: '#/components/schemas/PlayerStatMain'
+              $ref: '#/components/schemas/PlayerStatNew'
             examples:
-              'Create a player statistics':
+              "A request of creating a player's stat":
                 value:
-                  - name: 'Precious Achiuwa'
-                    game_name: '240506 HOU MEM'
-                    assist: 20
-                    hit: 5
-                    steal: 6
-                    rebound: 25
-                    free_throw: 2
-                    score: 23
-              'Update two player statistics':
-                value:
-                  - id: 3695
+                  name: 'Precious Achiuwa'
+                  game_date: '2024-05-06'
+                  game_away_abbr: 'HOU'
+                  game_home_abbr: 'MEM'
+                  assist: 20
+                  hit: 5
+                  steal: 6
+                  rebound: 25
+                  free_throw: 3
+                  score: 24
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                description: The new player's stat
+                $ref: '#/components/schemas/PlayerStat'
+              examples:
+                "A response of creating a player's stat":
+                  value:
+                    id: 3695
+                    game_id: 3001
+                    name: 'Precious Achiuwa'
+                    game_date: '2024-05-06'
+                    game_away_abbr: 'HOU'
+                    game_home_abbr: 'MEM'
                     assist: 20
                     hit: 5
                     steal: 6
                     rebound: 25
                     free_throw: 3
                     score: 24
-                  - id: 3696
-                    assist: 20
-                    hit: 6
-                    steal: 6
-                    rebound: 25
-                    free_throw: 5
-                    score: 23
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /players/{id}/stats/{game_id}:
+    patch:
+      tags:
+        - 球員
+      summary: 更新球員表現資料
+      description: Update a player's stat for a game
+      security:
+        - SessionID: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/game_id'
+      requestBody:
+        description: |
+          The request body for updating a player's stat for a game
+
+          Only the presented fields will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerStatPatch'
+            examples:
+              "A request of updating a player's stat for a game":
+                value:
+                  hit: 1
+                  free_throw: 4
+                  score: 30
       responses:
-        '201':
-          description: Created
         '204':
           description: Updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
-  /player-stats/{id}:
+    
     delete:
       tags:
         - 球員
       summary: 刪除球員表現資料
-      description: Delete player statistics data
+      description: Delete a player's stat for a game
       security:
         - SessionID: []
       parameters:
         - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/game_id'
       responses:
         '204':
           description: Deleted
@@ -638,7 +767,7 @@ paths:
 components:
   parameters:
     id:
-      description: Resource ID
+      description: The ID of the resource
       name: id
       in: path
       required: true
@@ -647,237 +776,329 @@ components:
         format: uint32
         example: 0
 
+    game_id:
+      description: The ID of the game
+      name: game_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 3001
+
+    team_id:
+      description: The ID of the team
+      name: team_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 3001
+
+    page_offset:
+      description: The offset of paginated data
+      name: page_offset
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 0
+
+    page_length:
+      description: The length of paginated data
+      name: page_length
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        example: 3
+
+    sort_field:
+      description: Field to sort by
+      name: sort_field
+      in: query
+      required: true
+      schema:
+        type: string
+        example: 'name'
+
+    sort_order:
+      description: Sort order
+      name: sort_order
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - 'ascending'
+          - 'descending'
+        example: 'descending'
+
   schemas:
-    Auth:
-      description: Authentication data
-      type: object
-      required:
-        - name
-        - credential
-      properties:
-        name:
-          type: string
-          example: 'Manager Zoe'
-        credential:
-          type: string
-          format: password
-          example: 'A super safe password!'
+    Game:
+      description: A game
+      allOf:
+        - type: object
+          required:
+            - id
+            - away_id
+            - away_abbr
+            - home_id
+            - home_abbr
+          properties:
+            id:
+              description: The ID of the game
+              type: integer
+              format: uint32
+            away_id:
+              description: The ID of the away team
+              type: integer
+              format: uint32
+            away_abbr:
+              description: The abbreviation of the away team
+              type: string
+            home_id:
+              description: The ID of the home team
+              type: integer
+              format: uint32
+            home_abbr:
+              description: The abbreviation of the home team
+              type: string
+        - $ref: '#/components/schemas/GameNew'
 
-    WithID:
-      description: Resource with ID
+    GameNew:
+      description: A new game
+      allOf:
+        - type: object
+          required:
+            - date
+            - away_name
+            - home_name
+          properties:
+            date:
+              description: The date of the game
+              type: string
+              format: date
+            away_name:
+              description: The name of the away team
+              type: string
+            home_name:
+              description: The name of the home team
+              type: string
+            away_score:
+              description: The score of the away team
+              type: integer
+              format: uint32
+            home_score:
+              description: The score of the home team
+              type: integer
+              format: uint32
+            is_home_winner:
+              description: Indicating the winner of the game
+              type: boolean
+
+    GameTeamPatch:
+      description: A patch for the game's team
       type: object
-      required:
-        - id
       properties:
-        id:
-          description: Resource ID
+        score:
+          description: The score of the team
           type: integer
           format: uint32
-          example: 0
+        is_winner:
+          description: |
+            Indicating the winner of the game.
 
-    GameHeader:
-      description: Game header data
-      type: object
-      required:
-        - date
-        - home_abbr
-        - home_name
-        - away_abbr
-        - away_name
-      properties:
-        date:
-          description: Date of the game
-          type: string
-          format: date
-          example: '2024-05-06'
-        home_abbr:
-          description: Home team abbreviation
-          type: string
-          example: 'BOS'
-        home_name:
-          description: Home team name
-          type: string
-          example: 'Celtics'
-        away_abbr:
-          description: Away team abbreviation
-          type: string
-          example: 'BKN'
-        away_name:
-          description: Away team name
-          type: string
-          example: 'Nets'
-
-    GameMain:
-      description: Game main data
-      type: object
-      properties:
-        home_score:
-          description: Home team score
-          type: integer
-          format: uint32
-          example: 123
-        away_score:
-          description: Away team score
-          type: integer
-          format: uint32
-          example: 98
-        is_winner_home:
-          description: Is the home team the winner
+            The field is mutually exclusive:
+            if one team is set as the winner,
+            all other teams  in the game will be unset as winners.
           type: boolean
-          example: true
 
     Team:
-      description: Team data
+      description: A team
+      allOf:
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              description: The ID of the team
+              type: integer
+              format: uint32
+        - $ref: '#/components/schemas/TeamNew'
+
+    TeamNew:
+      description: A new team
+      allOf:
+        - type: object
+          required:
+            - abbr
+            - name
+            - city
+            - year_founded
+          properties:
+            abbr:
+              description: The abbreviation of the team
+              type: string
+              example: 'BOS'
+            name:
+              description: The name of the team
+              type: string
+              example: 'Celtics'
+            city:
+              description: The city of the team
+              type: string
+              example: 'Boston'
+            year_founded:
+              description: The year the team was founded
+              type: integer
+              format: uint32
+              example: 1946
+        - $ref: '#/components/schemas/TeamPatch'
+
+    TeamPatch:
+      description: A patch for the team
       type: object
-      required:
-        - abbr
-        - name
-        - city
       properties:
-        abbr:
-          description: Team abbreviation
-          type: string
-          example: 'BOS'
-        name:
-          description: Team name
-          type: string
-          example: 'Celtics'
-        city:
-          description: Team city
-          type: string
-          example: 'Boston'
         coach:
-          description: Team coach name
+          description: The coach of the team
           type: string
           example: 'Joseph Mazzulla'
-        year_founded:
-          description: Team founded year
-          type: integer
-          format: uint32
-          example: 1946
 
     PlayerProfile:
-      description: Player profile data
+      description: A player profile
+      allOf:
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              description: The ID of the player
+              type: integer
+              format: uint32
+        - $ref: '#/components/schemas/PlayerProfileNew'
+
+    PlayerProfileNew:
+      description: A new player profile
+      allOf:
+        - type: object
+          required:
+            - name
+        - $ref: '#/components/schemas/PlayerProfilePatch'
+
+    PlayerProfilePatch:
+      description: A patch for the player profile
       type: object
-      required:
-        - name
       properties:
         name:
-          description: Player name
+          description: The name of the player
           type: string
           example: 'Precious Achiuwa'
         team_name:
-          description: Team name
+          description: The name of the team
           type: string
           example: 'Knicks'
         position:
-          description: Player position
+          description: The position of the player
           type: string
           example: 'F'
         birthdate:
-          description: Player birthdate
+          description: The birthdate of the player
           type: string
           format: date
           example: '1970-05-25'
         height:
-          description: Player height
+          description: The height of the player
           type: string
           example: '6-8'
         weight:
-          description: Player weight
+          description: The weight of the player
           type: integer
           format: uint32
           example: 243
         country:
-          description: Player country
+          description: The country of the player
           type: string
           example: 'Nigeria'
-    
-    PlayerStatHeader:
-      description: Player statistics header data
-      type: object
-      required:
-        - name
-        - game
-      properties:
-        name:
-          description: Player name
-          type: string
-          example: 'Precious Achiuwa'
-        game:
-          $ref: '#/components/schemas/GameHeader'
 
-    PlayerStatMain:
-      description: Player statistics main data
+    PlayerStat:
+      description: A player statistics
+      allOf:
+        - type: object
+          required:
+            - id
+            - game_id
+          properties:
+            id:
+              description: The ID of the player
+              type: integer
+              format: uint32
+            game_id:
+              description: The ID of the game
+              type: integer
+              format: uint32
+        - $ref: '#/components/schemas/PlayerStatNew'
+
+    PlayerStatNew:
+      description: A new player statistics
+      allOf:
+        - type: object
+          required:
+            - name
+            - game_date
+            - game_away_abbr
+            - game_home_abbr
+          properties:
+            name:
+              description: The name of the player
+              type: string
+              example: 'Precious Achiuwa'
+            game_date:
+              description: The date of the game
+              type: string
+              format: date
+              example: '2024-05-06'
+            game_away_abbr:
+              description: The abbreviation of the away team
+              type: string
+              example: 'HOU'
+            game_home_abbr:
+              description: The abbreviation of the home team
+              type: string
+              example: 'MEM'
+        - $ref: '#/components/schemas/PlayerStatPatch'
+
+    PlayerStatPatch:
+      description: A patch for the player statistics
       type: object
       properties:
         assist:
           description: Player assist count
           type: integer
           format: uint32
-          example: 20
         hit:
           description: Player hit count
           type: integer
           format: uint32
-          example: 5
         steal:
           description: Player steal count
           type: integer
           format: uint32
-          example: 6
         rebound:
           description: Player rebound count
           type: integer
           format: uint32
-          example: 25
         free_throw:
           description: Player free throw count
           type: integer
           format: uint32
-          example: 3
         score:
           description: Player score count
           type: integer
           format: uint32
-          example: 24
-
-    PageOptions:
-      description: Page options
-      type: object
-      required:
-        - offset
-        - length
-      properties:
-        offset:
-          description: The offset of paginated data
-          type: integer
-          format: uint32
-          example: 0
-        length:
-          description: The length of paginated data
-          type: integer
-          format: uint32
-          example: 10
-
-    SortOptions:
-      description: Sort options
-      type: object
-      required:
-        - field
-        - order
-      properties:
-        field:
-          description: Field to sort by
-          type: string
-          example: 'name'
-        order:
-          description: Sort order
-          type: string
-          enum:
-            - 'ascending'
-            - 'descending'
-          example: 'descending'
 
     Error:
       description: Reason for error
@@ -888,40 +1109,6 @@ components:
         message:
           type: string
           example: 'An unexpected error has occurred.'
-
-  requestBodies:
-    Pagination:
-      description: The request body for paginated data
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - page
-              - sort
-            properties:
-              page:
-                $ref: '#/components/schemas/PageOptions'
-              sort:
-                $ref: '#/components/schemas/SortOptions'
-          examples:
-            'ten records sorted by name in ascending order':
-              value:
-                page:
-                  offset: 0
-                  length: 10
-                sort:
-                  field: 'name'
-                  order: 'ascending'
-            'five records sorted by date in descending order':
-              value:
-                page:
-                  offset: 5
-                  length: 5
-                sort:
-                  field: 'date'
-                  order: 'descending'
 
   responses:
     BadRequestError:
