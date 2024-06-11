@@ -23,11 +23,11 @@ tags:
   - name: 認證
     description: Authentication
   - name: 比賽
-    description: Games
+    description: Game
   - name: 球隊
-    description: Teams
+    description: Team
   - name: 球員
-    description: Players
+    description: Player
 
 paths:
   /ping:
@@ -216,7 +216,6 @@ paths:
           content:
             application/json:
               schema:
-                description: The new game
                 $ref: '#/components/schemas/Game'
               examples:
                 'A response of creating a game':
@@ -356,7 +355,6 @@ paths:
           content:
             application/json:
               schema:
-                description: The new team
                 $ref: '#/components/schemas/Team'
               examples:
                 'A response of creating a team':
@@ -497,7 +495,6 @@ paths:
           content:
             application/json:
               schema:
-                description: The new player's profile
                 $ref: '#/components/schemas/PlayerProfile'
               examples:
                 "A response of creating a player's profile":
@@ -677,7 +674,6 @@ paths:
           content:
             application/json:
               schema:
-                description: The new player's stat
                 $ref: '#/components/schemas/PlayerStat'
               examples:
                 "A response of creating a player's stat":
