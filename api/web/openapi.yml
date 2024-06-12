@@ -18,16 +18,18 @@ servers:
         description: The origin of the service
 
 tags:
-  - name: 測試
-    description: Testing
   - name: 認證
     description: Authentication
   - name: 比賽
     description: Game
   - name: 球隊
     description: Team
-  - name: 球員
-    description: Player
+  - name: 球員介紹
+    description: Player profile
+  - name: 球員表現
+    description: Player stat
+  - name: 測試
+    description: Testing
 
 paths:
   /ping:
@@ -413,7 +415,7 @@ paths:
   /players/profile:
     get:
       tags:
-        - 球員
+        - 球員介紹
       summary: 讀取球員介紹資料
       description: Read players' profile
       parameters:
@@ -468,7 +470,7 @@ paths:
   /player/profile:
     post:
       tags:
-        - 球員
+        - 球員介紹
       summary: 新增球員介紹資料
       description: Create a player's profile
       security:
@@ -518,7 +520,7 @@ paths:
   /players/{id}/profile:
     patch:
       tags:
-        - 球員
+        - 球員介紹
       summary: 更新球員介紹資料
       description: Update a player's profile
       security:
@@ -554,7 +556,7 @@ paths:
     
     delete:
       tags:
-        - 球員
+        - 球員介紹
       summary: 刪除球員介紹資料
       description: Delete a player's profile
       security:
@@ -576,7 +578,7 @@ paths:
   /players/stat:
     get:
       tags:
-        - 球員
+        - 球員表現
       summary: 讀取球員表現資料
       description: Read players' statistics
       parameters:
@@ -643,7 +645,7 @@ paths:
   /player/stat:
     post:
       tags:
-        - 球員
+        - 球員表現
       summary: 新增球員表現資料
       description: Create a player's stat
       security:
@@ -702,7 +704,7 @@ paths:
   /players/{id}/stats/{game_id}:
     patch:
       tags:
-        - 球員
+        - 球員表現
       summary: 更新球員表現資料
       description: Update a player's stat for a game
       security:
@@ -740,7 +742,7 @@ paths:
     
     delete:
       tags:
-        - 球員
+        - 球員表現
       summary: 刪除球員表現資料
       description: Delete a player's stat for a game
       security:
