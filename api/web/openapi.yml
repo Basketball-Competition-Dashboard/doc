@@ -51,14 +51,14 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /auth/login:
+  /auth/session:
     post:
       tags:
         - 認證
-      summary: 登入
-      description: Login
+      summary: 創建認證會話
+      description: Create an authenticated session
       requestBody:
-        description: The request body for authentication
+        description: The request body for creating an authenticated session
         required: true
         content:
           application/json:
@@ -88,7 +88,7 @@ paths:
                   credential: 'A super safe password!'
       responses:
         '201':
-          description: Logged in
+          description: Created
           headers:
             Set-Cookie:
               description: To set the session ID for authorization
@@ -103,18 +103,17 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  
-  /auth/logout:
-    post:
+
+    delete:
       tags:
         - 認證
-      summary: 登出
-      description: Logout
+      summary: 刪除認證會話
+      description: Delete an authenticated session
       security:
         - SessionID: []
       responses:
         '204':
-          description: Logged out
+          description: Deleted
           headers:
             Set-Cookie:
               description: To unset the session ID for authorization
@@ -714,7 +713,7 @@ paths:
         - $ref: '#/components/parameters/game_id'
       requestBody:
         description: |
-          The request body for updating a player's stat for a game
+          The request body for updating a player's stat for a game.
 
           Only the presented fields will be updated.
         required: true
