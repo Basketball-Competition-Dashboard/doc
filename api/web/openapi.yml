@@ -981,10 +981,10 @@ components:
     PlayerProfileNew:
       description: A new player profile
       allOf:
+        - $ref: '#/components/schemas/PlayerProfilePatch'
         - type: object
           required:
             - name
-        - $ref: '#/components/schemas/PlayerProfilePatch'
 
     PlayerProfilePatch:
       description: A patch for the player profile
