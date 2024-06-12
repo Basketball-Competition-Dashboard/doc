@@ -574,7 +574,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /players/stat:
+  /players/stats:
     get:
       tags:
         - 球員表現
@@ -646,7 +646,7 @@ paths:
       tags:
         - 球員表現
       summary: 新增球員表現資料
-      description: Create a player's stat
+      description: Create a player's statistics
       security:
         - SessionID: []
       requestBody:
@@ -705,7 +705,7 @@ paths:
       tags:
         - 球員表現
       summary: 更新球員表現資料
-      description: Update a player's stat for a game
+      description: Update a player's statistics for a game
       security:
         - SessionID: []
       parameters:
@@ -743,7 +743,7 @@ paths:
       tags:
         - 球員表現
       summary: 刪除球員表現資料
-      description: Delete a player's stat for a game
+      description: Delete a player's statistics for a game
       security:
         - SessionID: []
       parameters:
