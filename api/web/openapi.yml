@@ -130,7 +130,7 @@ paths:
       tags:
         - 比賽
       summary: 讀取比賽資料
-      description: Read games
+      description: Read games which are paginated and sorted
       parameters:
         - $ref: '#/components/parameters/page_offset'
         - $ref: '#/components/parameters/page_length'
@@ -283,7 +283,7 @@ paths:
       tags:
         - 球隊
       summary: 讀取球隊資料
-      description: Read teams
+      description: Read teams which are paginated and sorted
       parameters:
         - $ref: '#/components/parameters/page_offset'
         - $ref: '#/components/parameters/page_length'
@@ -416,7 +416,7 @@ paths:
       tags:
         - 球員介紹
       summary: 讀取球員介紹資料
-      description: Read players' profile
+      description: Read players' profile which are paginated and sorted
       parameters:
         - $ref: '#/components/parameters/page_offset'
         - $ref: '#/components/parameters/page_length'
@@ -579,7 +579,7 @@ paths:
       tags:
         - 球員表現
       summary: 讀取球員表現資料
-      description: Read players' statistics
+      description: Read players' statistics which are paginated and sorted
       parameters:
         - $ref: '#/components/parameters/page_offset'
         - $ref: '#/components/parameters/page_length'
