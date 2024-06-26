@@ -10,12 +10,8 @@ externalDocs:
   url: https://github.com/Basketball-Competition-Dashboard
 
 servers:
-  - url: '{ORIGIN}/api/web'
+  - url: '/api/web'
     description: Web API service
-    variables:
-      ORIGIN:
-        default: http://localhost:5000
-        description: The origin of the service
 
 tags:
   - name: 認證
